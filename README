@@ -9,7 +9,7 @@ traversing the graph: Breadth-first, Depth-first)
 - Simulation Engine: ...?
 
 XML: 
-- loading and storing...db4o? get feedback
+- loading and storing...db4o? GraphML GEXP? get feedback
 
 INSTALL UBIGRAPH:
 http://ubietylab.net/ubigraph/content/Docs/index.html#languagebindings (Java)
