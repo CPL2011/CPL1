@@ -1,1 +1,33 @@
-test
+TODO's
+____________
+
+SCALA: 
+- class Graph, Node, Edge: functionality = (add Node, remove Node, add Edge, remove Edge, get Neighbours, 
+(undirected edges are represented using two directed edges), get all Nodes, 
+traversing the graph: Breadth-first, Depth-first)
+- Node, Edge and Graph will use a 'visualization' trait to provide the Ubigraph functionality
+- Simulation Engine: ...?
+
+XML: 
+- loading and storing...db4o? get feedback
+
+INSTALL UBIGRAPH:
+http://ubietylab.net/ubigraph/content/Docs/index.html#languagebindings (Java)
+(install apache-xmlrpc-3.1.3 and UbiGraph-alpa-0.2.4-Linux32-Debian-4)
+
+
+IN PROGRESS
+_____________
+
+
+
+
+
+DONE
+_____________
+
+
+
+
+IDEAS
+_____________
