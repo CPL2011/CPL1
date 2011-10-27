@@ -33,3 +33,9 @@ IDEAS
 _____________
 
 We can use an itterator pattern to implement different traversing strategy's.
+
+For those like me already having an eclipse on there windows pc.
+You can run an Ubigraph App in your familiar environment while outputting to the Linux Ubigraph Server.
+The only thing you have to change is adding some libraries and:
+UbigraphClient graph = new UbigraphClient("http://<LinuxUbigraphServer>:20738/RPC2");
+It's working great so far :p
