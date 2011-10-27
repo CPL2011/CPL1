@@ -31,3 +31,5 @@ _____________
 
 IDEAS
 _____________
+
+We can use an itterator pattern to implement different traversing strategy's.
