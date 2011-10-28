@@ -152,7 +152,7 @@ object Test extends App {
   
   graph.traverse(BreadthFirstTraversal, e => println(e.getNeighbours.toString), 1) //print the object ids of the reachable nodes of each node it visits (in order)
   System.out.println("---------------------------")
-  graph.traverse(DepthFirstTraversal, e => println(e.getNeighbours.toString), 1) // should trigger an error message
+  graph.traverse(DepthFirstTraversal, e => println(e.getNeighbours.toString), 100) // should trigger an error message
   //graph.removeEdge(1, 2)
   //graph.removeEdge(1, 3)
   //graph.removeEdge(1, 21)
