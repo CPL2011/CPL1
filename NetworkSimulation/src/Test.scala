@@ -1,37 +1,11 @@
 //--> in this code the word 'neighbour' refers to a reachable node
 
+import scala.collection.mutable.HashMap
 import scala.collection.mutable.ListBuffer
 
-object Test extends App {
-  var graph = new Graph with BreadthFirstTraversal;
-  val node1,node2, node3, node4, node5, node6, node7, node8, node9 = new Node()
-  val edge1 = new Edge(node1, node2)
-  val edge2 = new Edge(node1, node3)
-  val edge3 = new Edge(node2, node4)
-  val edge4 = new Edge(node2, node5)
-  val edge5 = new Edge(node3, node6)
-  val edge6 = new Edge(node3, node7)
-  val edge7 = new Edge(node4, node8)
-  val edge8 = new Edge(node8, node9)
-  val edge9 = new Edge(node5, node6)
-  graph.traverse(e => println(e.getNeighbours.toString),node1)
-}
-
-// abstract class Graph {
-//   def nodes: List[Node]
-//   def edges: List[Edge]
-  
-//   def addNode(node: Node)
-//   def removeNode(node: Node)
-  
-//   def addEdge(edge: Edge)
-//   def removeEdge(edge: Edge)
-
-// }
-
-class Node {
+class Node(label: String) {
   var neighbours: List[Node] = Nil
-
+ 
   def addNeighbour(node : Node) = neighbours = node :: neighbours
   def removeNeighbour(node : Node) = neighbours diff List(node)
   def getNeighbours : List[Node] = neighbours
@@ -43,27 +17,11 @@ class Edge(source: Node, destination: Node) {
   //def remove = source.removeNeighbour(destination)
 }
 
-class Graph {
-  var nodes: List[Node] = Nil
-  var edges: List[Edge] = Nil
-  
-  def addNode(node: Node) = 
-    if(! nodes.contains(node)) nodes = node :: nodes
-  def removeNode(node: Node) = {
-    nodes = nodes diff List(node)
-  }
-
-  def addEdge(edge: Edge) = 
-    if(! edges.contains(edge)) edges = edge :: edges
-  def removeEdge(edge: Edge) =
-    edges = edges diff List(edge)
+abstract class Traversal {
+   def traverse(f: Node => Unit, node: Node)
 }
 
-// abstract class Traversal {
-//   def traverse(f: Node => Unit, node: Node)
-// }
-
-trait DepthFirstTraversal {//extends Traversal {
+object DepthFirstTraversal extends Traversal {
   def traverse(f: Node => Unit, node: Node) = {
     var visited : List[Node] = Nil;
     def dft(f: Node => Unit, node: Node) : Unit = {
@@ -75,7 +33,7 @@ trait DepthFirstTraversal {//extends Traversal {
   }
 }
 
-trait BreadthFirstTraversal {//extends Traversal {
+object BreadthFirstTraversal extends Traversal {
   def traverse(f: Node => Unit, node: Node) = {
     def bft(f: Node => Unit, node: Node) : Unit = {
       var queue = new ListBuffer[Node]()
@@ -98,4 +56,65 @@ trait BreadthFirstTraversal {//extends Traversal {
   }
 }
 
+
+class Graph {
+  var nodes = new HashMap[String, Node]()
+  var edges = new HashMap[(String, String), Edge]()
+  
+  def addNode(node: String) = 
+    if(!nodes.contains(node)) nodes += ((node, new Node(node)))
+  def removeNode(node: String) = 
+    nodes -= node
+
+  def addEdge(source: String, destination: String) = {
+    (nodes.get(source), nodes.get(destination)) match {
+      case (Some(sourceNode), Some(destinationNode)) => {
+	edges += (((source, destination), new Edge(sourceNode, destinationNode)))
+      }
+      case _ => {
+	System.err.println("Both the source and destination String have to specify existing nodes in the graph. This is not the case")
+      }
+    }
+  }
+  def removeEdge(source: String, destination: String) =
+    edges -= ((source, destination))
+
+  def traverse(f: Node => Unit, node: String) = {
+    nodes.get(node) match {
+      case Some(node) => {
+	DepthFirstTraversal.traverse(f, node)
+      }
+      case None => { 
+	System.err.println("The specified node is no member of this graph")
+      }
+    }
+    
+  }    
+}
+
+object Test extends App {
+  var graph = new Graph
+  graph.addNode("node1")
+  graph.addNode("node2")
+  graph.addNode("node3")
+  graph.addNode("node4")
+  graph.addNode("node5")
+  graph.addNode("node6")
+  graph.addNode("node7")
+  graph.addNode("node8")
+  graph.addNode("node9")
+
+  graph.addEdge("node1", "node2")
+  graph.addEdge("node1", "node3")
+  graph.addEdge("node2", "node4")
+  graph.addEdge("node2", "node5")  
+  graph.addEdge("node3", "node6")
+  graph.addEdge("node3", "node7")
+  graph.addEdge("node4", "node8")
+  graph.addEdge("node8", "node9")
+  graph.addEdge("node5", "node6")
+
+  graph.traverse(e => println(e.getNeighbours.toString),"node1")
+  graph.traverse(e => println(e.getNeighbours.toString),"node10")
+}
 
