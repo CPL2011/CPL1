@@ -22,17 +22,20 @@ _____________
 
 
 
-
 DONE
 _____________
-
-
+Most basic functionality has been provided but things might still have to be refactored into different classes/traits 
+(for 'traversing' check the ideas below, for visualizing the graph, a more robust strategy might be neat)
+ 
 
 
 IDEAS
 _____________
 
 We can use an itterator pattern to implement different traversing strategy's.
+---> Yea, we'll have to choose whether to implement using scala library traits Iterator or Traversable. 
+---> I believe the assignment is hinting towards the use of Traversable. Adapting the code should be easy,
+---> creating a wrapper class extending the trait and copying the foreach (currently called traverse) implementation.
 
 For those like me already having an eclipse on there windows pc.
 You can run an Ubigraph App in your familiar environment while outputting to the Linux Ubigraph Server.
