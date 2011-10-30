@@ -226,7 +226,7 @@ object PersistenceGraph extends Graph with Db4oPersistence{
 	//config.objectClass(Edge.class).cascadeOnActivate(true);
     openDb(path)
     val p:PersistenceGraph = queryDb((g:PersistenceGraph)=>(g.path==path)).last
-    println( p.toString())
+    
     closeDb()
     p.openDb(path)
     return p
