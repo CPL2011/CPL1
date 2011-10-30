@@ -19,14 +19,14 @@ http://ubietylab.net/ubigraph/content/Docs/index.html#languagebindings (Java)
 IN PROGRESS
 _____________
 
-- loading and storing...db4o - Andreas
+
 
 
 DONE
 _____________
-Most basic functionality has been provided but things might still have to be refactored into different classes/traits 
+- Most basic functionality has been provided but things might still have to be refactored into different classes/traits 
 (for 'traversing' check the ideas below, for visualizing the graph, a more robust strategy might be neat)
- 
+- I have created a trait that allows a graph to be stored and loaded in a db4o database. 
 
 
 IDEAS
