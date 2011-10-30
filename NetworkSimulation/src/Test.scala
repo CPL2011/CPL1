@@ -3,6 +3,10 @@
 import org.ubiety.ubigraph.UbigraphClient
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.ListBuffer
+import com.db4o.ObjectContainer
+import com.db4o.Db4o
+import com.db4o.query.Predicate
+import com.db4o.ObjectSet
 
 class Node(label: Int) {
   var neighbours: List[Node] = Nil
@@ -120,8 +124,67 @@ class Graph {
   }
 }
 
+/**
+ * package download: http://www.db4o.com/community/qdownload.aspx?file=java.zip
+ */
+trait Db4oPersistence{
+
+var db:ObjectContainer = null;
+def openDb(path:String){
+	db = Db4o openFile "path"
+}
+
+def closeDb():Unit = db.close()
+
+def storeNode(i:Int,node:Node){
+	db.store((i,node))
+}
+def storeEdge(e:Edge){
+	db.store(e)
+}
+def storeGraph(g:Graph){
+	for((s,n)<-g.nodes) storeNode(s,n)
+	for((_,e)<-g.edges) storeEdge(e)
+}
+implicit def toPredicate[T](predicate: T => Boolean) =
+new Predicate[T]() {
+
+
+	//def `match`(point : Any) : Boolean = 
+	//		throw new Exception("This should never be called!")
+	def `match`(p : T) : Boolean = {
+			return predicate(p)
+	}
+}
+implicit def toList[T](objectSet: ObjectSet[T] ) =
+(new RichObjectSet[T](objectSet)).toList
+
+//query return db4o ObjectSet class
+//because of the implicit def it is automatically converted to a List[T]
+//that is why we needed the RichObjectSet...
+/*
+ *EXAMPLE OF USAGE
+ *def predicate(n:Node):Boolean = n.neighbours.length>X&&...||...
+ *queryDb(predicate)
+ */
+def queryDb[T](predicate: T => Boolean):List[T] =
+db query predicate 
+
+
+}
+/*
+ * extend DB4O's ObjectSet with scala's Iterator
+ */
+class RichObjectSet[T](objectSet:ObjectSet[T]) extends Iterator[T] {
+	def hasNext:Boolean =  objectSet.hasNext()
+			def next:T = objectSet.next()
+}
+class PersistentGraph(path:String) extends Graph with Db4oPersistence{
+	openDb(path)
+}
+
 object Test extends App {
-  var graph = new Graph
+  var graph = new PersistentGraph("test.db")
 
   var i = 1
   while(i<=21) {
@@ -160,6 +223,14 @@ object Test extends App {
   //graph.removeEdge(1, 19)
   graph.removeNode(1)
   graph.visualize // should create a successful visualisation
+  
+  println("testing db4o...")
+  graph.storeGraph(graph)
+  //pred to retrieve all nodes
+  def testPred(n:Node):Boolean = true
+  val l = graph.queryDb(testPred)
+  for(n<-l) println(n.toString())
+  graph.closeDb()
 
 }
 
