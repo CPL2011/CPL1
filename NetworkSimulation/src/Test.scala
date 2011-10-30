@@ -7,6 +7,7 @@ import com.db4o.ObjectContainer
 import com.db4o.Db4o
 import com.db4o.query.Predicate
 import com.db4o.ObjectSet
+import java.io.File
 
 class Node(label: Int) {
   var neighbours: List[Node] = Nil
@@ -16,10 +17,14 @@ class Node(label: Int) {
   def removeNeighbour(node : Node) = neighbours diff List(node)
   def getNeighbours : List[Node] = neighbours
   def visualize(ubigraphClient : UbigraphClient) = ubigraphClient.newVertex(label)
+  
+  
 }
 
 class Edge(source: Node, destination: Node) {
   source.addNeighbour(destination)
+  def getSource():Node = source
+  def getDestination():Node = destination
   def visualize(ubigraphClient : UbigraphClient) = ubigraphClient.newEdge(source.getLabel, destination.getLabel) 
   def remove = source.removeNeighbour(destination)
 }
@@ -131,21 +136,21 @@ trait Db4oPersistence{
 
 var db:ObjectContainer = null;
 def openDb(path:String){
-	db = Db4o openFile "path"
+	db = Db4o openFile path
 }
 
 def closeDb():Unit = db.close()
+//clear db by deleting the file and restart the db...
+def deleteDb(path:String){
+  val thedb:File = new File(path)
+  
+  if(thedb.exists()) {
+    if(thedb.delete())    println("deleted old test db")
+    else println(path + " does not exist!")
+  }
+    
+  }
 
-def storeNode(i:Int,node:Node){
-	db.store((i,node))
-}
-def storeEdge(e:Edge){
-	db.store(e)
-}
-def storeGraph(g:Graph){
-	for((s,n)<-g.nodes) storeNode(s,n)
-	for((_,e)<-g.edges) storeEdge(e)
-}
 implicit def toPredicate[T](predicate: T => Boolean) =
 new Predicate[T]() {
 
@@ -169,8 +174,6 @@ implicit def toList[T](objectSet: ObjectSet[T] ) =
  */
 def queryDb[T](predicate: T => Boolean):List[T] =
 db query predicate 
-
-
 }
 /*
  * extend DB4O's ObjectSet with scala's Iterator
@@ -179,12 +182,48 @@ class RichObjectSet[T](objectSet:ObjectSet[T]) extends Iterator[T] {
 	def hasNext:Boolean =  objectSet.hasNext()
 			def next:T = objectSet.next()
 }
-class PersistentGraph(path:String) extends Graph with Db4oPersistence{
+class PersistenceGraph(p:String) extends Graph with Db4oPersistence{
+    val path = p
 	openDb(path)
+	
+def storeNode(i:Int,node:Node){
+	db.store((i,node))
+}
+def storeEdge(e:Edge){
+	db.store(e)
+}
+def storeGraph(){
+	db.store(this)
+	for((_,n)<-nodes) db.store(n)//db4o does not store the nodes and edges when you just store the graph??->I've got some nullpointers
+	for((_,e)<-edges) db.store(e)//when I left out these 2 lines-_-
+}
+
+//def getGraphFromPersistence():PersistenceGraph{
+//   this = queryDb((g:PersistenceGraph)=>g.path==path)
+//   nodes.clear()
+//   edges.clear()
+//   for(n:Node<-queryDb((n:Node)=>true)) addNode(n.getLabel)
+//   for(e:Edge<-queryDb((e:Edge)=>true)) addEdge(e.getSource().getLabel,e.getDestination().getLabel)
+//}
+}
+object PersistenceGraph extends Graph with Db4oPersistence{
+  
+ def getGraphFromDb(path:String):PersistenceGraph = {
+    openDb(path)
+    val p:PersistenceGraph = queryDb((g:PersistenceGraph)=>(g.path==path)).last
+    println( p.toString())
+    closeDb()
+    p.openDb(path)
+    return p
+  }
+    
 }
 
 object Test extends App {
-  var graph = new PersistentGraph("test.db")
+  
+  
+  var graph = new PersistenceGraph("test.db")
+  
 
   var i = 1
   while(i<=21) {
@@ -225,12 +264,20 @@ object Test extends App {
   graph.visualize // should create a successful visualisation
   
   println("testing db4o...")
-  graph.storeGraph(graph)
-  //pred to retrieve all nodes
-  def testPred(n:Node):Boolean = true
-  val l = graph.queryDb(testPred)
-  for(n<-l) println(n.toString())
+  graph.storeGraph()
+  println("graph stored")
   graph.closeDb()
+  
+  println("retrieving graph from file")
+  val g = PersistenceGraph.getGraphFromDb("test.db")
+  val l = g.queryDb((n:Node)=>true)
+  val l2 = for(n:Node<-l) yield n.getLabel
+  println("original nodes' values")
+  println(graph.nodes.keySet)
+  println("stored nodes' values")
+  println(l2)
 
+  g.closeDb()
+  g.deleteDb("test.db")
 }
 
