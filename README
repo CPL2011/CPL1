@@ -18,7 +18,9 @@ http://ubietylab.net/ubigraph/content/Docs/index.html#languagebindings (Java)
 
 IN PROGRESS
 _____________
-
+- the db4o storage still does not work properly and I probably do not have the time today/tomorrow to fix it... 
+The problem is that db4o does not store the references that are stored in the graph object. I tried the config
+method, but it did not work.
 
 
 
@@ -26,11 +28,16 @@ DONE
 _____________
 - Most basic functionality has been provided but things might still have to be refactored into different classes/traits 
 (for 'traversing' check the ideas below, for visualizing the graph, a more robust strategy might be neat)
-- I have created a trait that allows a graph to be stored and loaded in a db4o database. 
+- trait 'infectable'
+
 
 
 IDEAS
 _____________
+I kind of don't like how the neighbours/nodes are managed in our graph. Now we keep the neighbour nodes in each node 
+and we keep the edges(that also contain nodes). This is double the work. I would only keep edges to neighbours in the 
+Node, so the graph only has a map of nodes. However it could be that the way it is now implemented was done for
+a specific reason, so then you can ignore this...
 
 Splitting the code into different files was an excellent decision. It had to happen sooner or later.
 
