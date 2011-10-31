@@ -35,7 +35,7 @@ _____________
 IDEAS
 _____________
 I kind of don't like how the neighbours/nodes are managed in our graph. Now we keep the neighbour nodes in each node 
-and we keep the edges(that also contain nodes). This is double the work. I would only keep edges to neighbours in the 
+and we keep the edges(that also contain nodes) in the graph. This is double the work. I would only keep edges to neighbours in the 
 Node, so the graph only has a map of nodes. However it could be that the way it is now implemented was done for
 a specific reason, so then you can ignore this...
 
