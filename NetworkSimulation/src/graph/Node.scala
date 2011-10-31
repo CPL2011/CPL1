@@ -8,12 +8,12 @@ class Node(label: Int) {
   //Shouldn't it be better to keep a list of Edges? Query's are verry cpu intensive.
   //---> Since the edges were stored in a hashmap and you'd know the labels of the source and dest node (which serve as
   //---> the key to the map, retrieval of the edge would only require constant time. Nevertheless, storing edges 
-  //---> might indeed be a bit more logical. So altough it does create the awkward situation were a node 
+  //---> is indeed more logical. So altough it does create the awkward situation were a node 
   //---> can access itself through each edge it stores, I've made the change.
- 
+  
   def getLabel : Int = label
-  def addEdge(edge : Edge) = connectedEdges = edge :: connectedEdges
-  def removeNeighbour(edge: Edge) = connectedEdges diff List(edge)
+  def addConnectedEdge(edge : Edge) = connectedEdges = edge :: connectedEdges
+  def removeConnectedEdge(edge: Edge) = connectedEdges diff List(edge)
   def getConnectedEdges : List[Edge] = connectedEdges
   def visualize(ubigraphClient : UbigraphClient) = ubigraphClient.newVertex(label)
   
@@ -54,7 +54,7 @@ class InfecableNode(label:Int,infectionChance:Float) extends Node(label) with In
   	{iChance = f}
   
   def infect(){
-    isInfected(neighbours.size,getInfectionChance())
+    isInfected(getConnectedEdges.size,getInfectionChance())
   }
   
 }
