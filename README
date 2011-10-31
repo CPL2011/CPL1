@@ -32,6 +32,8 @@ _____________
 IDEAS
 _____________
 
+Splitting the code into different files was an excellent decision. It had to happen sooner or later.
+
 We can use an itterator pattern to implement different traversing strategy's.
 ---> Yea, we'll have to choose whether to implement using scala library traits Iterator or Traversable. 
 ---> I believe the assignment is hinting towards the use of Traversable. Adapting the code should be easy,
