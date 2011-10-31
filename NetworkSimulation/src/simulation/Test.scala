@@ -2,8 +2,9 @@ package simulation
 
 
 import graph._
+import scala.collection.mutable.ListBuffer
 
-object Test extends App {
+object Test extends Application {
   
   
   var graph = new PersistenceGraph("test.db")
@@ -35,10 +36,20 @@ object Test extends App {
   graph.addEdge(1, 20)
   graph.addEdge(1, 21)
 
-  
-  graph.traverse(BreadthFirstTraversal, e => println(e.getNeighbours.toString), 1) //print the object ids of the reachable nodes of each node it visits (in order)
-  System.out.println("---------------------------")
-  graph.traverse(DepthFirstTraversal, e => println(e.getNeighbours.toString), 100) // should trigger an error message
+  //print the object ids of the reachable nodes of each node it visits (in order)
+  graph.traverse(BreadthFirstTraversal, e => println(e.getConnectedEdges.toString), 1) 
+
+  //check if two nodes are connected
+  var connected = false
+  graph.traverse(BreadthFirstTraversal, node => if (node.getLabel == 9) connected = true, 2) 
+  if (connected) System.out.println("connected") else System.out.println("unconnected") 
+
+  //retrieve an ordered list of the visited nodes 
+  var nodeListBuffer = new ListBuffer[Node]()
+  graph.traverse(BreadthFirstTraversal, node => nodeListBuffer += node, 1)
+  System.out.println("The ListBuffer contains an ordered list of size " + nodeListBuffer.size)
+
+  graph.traverse(DepthFirstTraversal, e => println(e.getConnectedEdges.toString), 100) // should trigger an error message
   //graph.removeEdge(1, 2)
   //graph.removeEdge(1, 3)
   //graph.removeEdge(1, 21)
@@ -46,6 +57,7 @@ object Test extends App {
   //graph.removeEdge(1, 19)
   graph.removeNode(1)
   graph.visualize // should create a successful visualisation
+  System.out.println("---------------------------")
   
   println("testing db4o...")
   graph.storeGraph()
