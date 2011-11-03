@@ -78,7 +78,7 @@ object Test extends Application {
 //  g.deleteDb("test.db")
   graph.saveGraph("test.xml")
   val g:XMLGraph = new XMLGraph()
-  g.setGraphFromXML("test.xml")
+  g.loadGraph("test.xml")
   println("original: ")
    println(graph.nodes)
     println(graph.edges)

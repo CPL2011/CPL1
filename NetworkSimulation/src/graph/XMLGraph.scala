@@ -12,8 +12,8 @@ class XMLGraph extends Graph{
   </Nodes>
 </Graph>
 		  		
-  def setGraphFromXML(path:String){
-    val node:scala.xml.Node = loadGraph(path)
+  def loadGraph(path:String){
+    val node:scala.xml.Node = loadXML(path)
     nodes.clear()
     edges.clear()
     for(i <-((((node)\"Nodes") \ "Node") )) addNode(new Node(i))
@@ -34,6 +34,6 @@ class XMLGraph extends Graph{
     scala.xml.XML.save(path,toXML)
   }
   
-  def loadGraph(path:String)=    scala.xml.XML.loadFile(path)
+  def loadXML(path:String)=    scala.xml.XML.loadFile(path)
 
  }
