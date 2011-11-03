@@ -6,8 +6,8 @@ import scala.collection.mutable.ListBuffer
 
 
   class Graph {
-  private var nodes = new HashMap[Int, Node]()
-  private var edges = new HashMap[(Int, Int), Edge]()
+  var nodes = new HashMap[Int, Node]()
+  var edges = new HashMap[(Int, Int), Edge]()
   
   def getNodes():HashMap[Int, Node] = nodes
   def getEdges():HashMap[(Int, Int), Edge] = edges

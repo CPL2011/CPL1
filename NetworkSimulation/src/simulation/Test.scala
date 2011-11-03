@@ -6,9 +6,9 @@ import scala.collection.mutable.ListBuffer
 
 object Test extends Application {
   
-  var test = new TestDescription(true,"http://192.168.253.128:20738/RPC2")
-  //var test = new TestDescription(false,"")
-  var graph = new PersistenceGraph("test.db")
+  //var test = new TestDescription(true,"http://192.168.253.128:20738/RPC2")
+  var test = new TestDescription(false,"")
+  var graph = new XMLGraph()
   
 
   var i = 1
@@ -60,22 +60,31 @@ object Test extends Application {
   graph.visualize(test.has, test.svr) // should create a successful visualisation
   System.out.println("---------------------------")
   
-  println("testing db4o...")
-  graph.storeGraph()
-  println("graph stored")
-  graph.closeDb()
-  
-  println("retrieving graph from file")
-  val g = PersistenceGraph.getGraphFromDb("test.db")
-  val l = g.queryDb((n:Node)=>true)
-  val l2 = for(n:Node<-l) yield n.getLabel
-  println("original nodes' values")
-  println(graph.getNodes().keySet)
-  println("stored nodes' values")
-  println(l2)
-
-  g.closeDb()
-  g.deleteDb("test.db")
+//  println("testing db4o...")
+//  graph.storeGraph()
+//  println("graph stored")
+//  graph.closeDb()
+//  
+//  println("retrieving graph from file")
+//  val g = PersistenceGraph.getGraphFromDb("test.db")
+//  val l = g.queryDb((n:Node)=>true)
+//  val l2 = for(n:Node<-l) yield n.getLabel
+//  println("original nodes' values")
+//  println(graph.getNodes().keySet)
+//  println("stored nodes' values")
+//  println(l2)
+//
+//  g.closeDb()
+//  g.deleteDb("test.db")
+  graph.saveGraph("test.xml")
+  val g:XMLGraph = new XMLGraph()
+  g.setGraphFromXML("test.xml")
+  println("original: ")
+   println(graph.nodes)
+    println(graph.edges)
+   println("loaded: ")
+  println(g.nodes)
+   println(g.edges)
 }
 
 class TestDescription(hasServer: Boolean, server: String) {

@@ -7,4 +7,8 @@ class Edge(source: Node, destination: Node) {
   def getDestination():Node = destination
   def visualize(ubigraphClient : UbigraphClient) = ubigraphClient.newEdge(source.getLabel, destination.getLabel) 
   def remove = source.removeConnectedEdge(this)
+  def toXML() = <Edge>
+        <source>{source.getLabel.toString()}</source>
+        <destination>{destination.getLabel.toString()}</destination>
+      </Edge>
 }

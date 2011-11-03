@@ -17,6 +17,9 @@ class Node(label: Int) {
   def getConnectedEdges : List[Edge] = connectedEdges
   def visualize(ubigraphClient : UbigraphClient) = ubigraphClient.newVertex(label)
   
+  def toXML() = <Node label={label.toString()}>
+      {connectedEdges.map(e=>e.toXML())}
+    </Node>
   
 }
 
