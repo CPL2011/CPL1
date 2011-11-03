@@ -235,7 +235,7 @@ object PersistenceGraph extends Graph with Db4oPersistence{
 }
 
 object Test extends Application {
-  
+
   
   var graph = new PersistenceGraph("test.db")
   
@@ -276,6 +276,7 @@ object Test extends Application {
   //graph.removeEdge(1, 20)
   //graph.removeEdge(1, 19)
   graph.removeNode(1)
+  
   graph.visualize // should create a successful visualisation
   
   println("testing db4o...")
@@ -295,4 +296,3 @@ object Test extends Application {
   g.closeDb()
   g.deleteDb("test.db")
 }
-

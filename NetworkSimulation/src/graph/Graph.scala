@@ -61,8 +61,10 @@ import scala.collection.mutable.ListBuffer
     
   }
   
-  def visualize = {
+  def visualize(hasServer : Boolean, serverUrl : String) = {
     var ubigraphClient = new UbigraphClient
+    if(hasServer == true) ubigraphClient = new UbigraphClient(serverUrl)
+    //var ubigraphClient = new UbigraphClient
     nodes.values.foreach(e => e.visualize(ubigraphClient))
     edges.values.foreach(e => e.visualize(ubigraphClient))
   }

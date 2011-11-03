@@ -6,7 +6,8 @@ import scala.collection.mutable.ListBuffer
 
 object Test extends Application {
   
-  
+  var test = new TestDescription(true,"http://192.168.253.128:20738/RPC2")
+  //var test = new TestDescription(false,"")
   var graph = new PersistenceGraph("test.db")
   
 
@@ -56,7 +57,7 @@ object Test extends Application {
   //graph.removeEdge(1, 20)
   //graph.removeEdge(1, 19)
   graph.removeNode(1)
-  graph.visualize // should create a successful visualisation
+  graph.visualize(test.has, test.svr) // should create a successful visualisation
   System.out.println("---------------------------")
   
   println("testing db4o...")
@@ -75,4 +76,9 @@ object Test extends Application {
 
   g.closeDb()
   g.deleteDb("test.db")
+}
+
+class TestDescription(hasServer: Boolean, server: String) {
+  val has = hasServer
+  val svr = server
 }
