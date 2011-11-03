@@ -29,6 +29,10 @@ _____________
 - Most basic functionality has been provided but things might still have to be refactored into different classes/traits 
 (for 'traversing' check the ideas below, for visualizing the graph, a more robust strategy might be neat)
 - trait 'infectable'
+- Because of the problems with the object databases that I had(I'm sure that I probably made some stupid
+mistakes), I have implemented a load/store mechanism based on xml. It is a bit more code that with db4o,
+but at least it works:) Just do "graph.save(path)" to save it, and to load from a file use "graph2.loadGraph(path)"
+
 
 
 
