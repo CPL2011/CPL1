@@ -44,7 +44,7 @@ trait Infectable{
   }
 }
 
-class InfecableNode(label:Int,infectionChance:Float) extends Node(label) with Infectable{
+class InfectableNode(label:Int,infectionChance:Float) extends Node(label) with Infectable{
   
   var iChance = infectionChance;
   
