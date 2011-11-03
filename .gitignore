@@ -1,0 +1,8 @@
+*.class
+*.html
+NetworkSimulation/.settings/org.eclipse.jdt.core.prefs
+NetworkSimulation/.settings/org.eclipse.jdt.ui.prefs
+NetworkSimulation/.classpath
+NetworkSimulation/.project
+NetworkSimulation/.cache
+NetworkSimulation/bin/*

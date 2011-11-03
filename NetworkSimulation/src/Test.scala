@@ -234,7 +234,7 @@ object PersistenceGraph extends Graph with Db4oPersistence{
     
 }
 
-object Test extends App {
+object Test extends Application {
   
   
   var graph = new PersistenceGraph("test.db")
