@@ -3,6 +3,7 @@ import org.ubiety.ubigraph.UbigraphClient
 import scala.util.Random
 
 class Node(label: Int) {
+  def this(n:scala.xml.Node) = this((n\"@label").text.toInt)
   var connectedEdges: List[Edge] = Nil
   //If you store a list of Nodes the Node has to do some kind of Query to find the Edge that connects this neigbour.
   //Shouldn't it be better to keep a list of Edges? Query's are verry cpu intensive.
@@ -21,11 +22,12 @@ class Node(label: Int) {
       {connectedEdges.map(e=>e.toXML())}
     </Node>
   
+  
 }
 
 trait Infectable{
   var infected:Boolean = false
-  val dead:Boolean = false
+  var dead:Boolean = false
   
   def isDead():Boolean = dead
   
@@ -48,7 +50,11 @@ trait Infectable{
 }
 
 class InfectableNode(label:Int,infectionChance:Float) extends Node(label) with Infectable{
-  
+  def this(n:scala.xml.Node) = {
+    this((n\"@label").text.toInt,(n\"infectionChance").text.toFloat)
+    dead = (n\"dead").text.toBoolean
+    infected = (n\"infected").text.toBoolean
+  }
   var iChance = infectionChance;
   
   def getInfectionChance():Float = iChance
@@ -59,5 +65,10 @@ class InfectableNode(label:Int,infectionChance:Float) extends Node(label) with I
   def infect(){
     isInfected(getConnectedEdges.size,getInfectionChance())
   }
-  
+  override def toXML() = <Node label={label.toString()}>
+      {connectedEdges.map(e=>e.toXML())}
+      <infected>{infected}</infected>
+      <infectionChance>{iChance}</infectionChance>
+      <dead>{dead}</dead>
+    </Node>
 }

@@ -16,7 +16,7 @@ class XMLGraph extends Graph{
     val node:scala.xml.Node = loadGraph(path)
     nodes.clear()
     edges.clear()
-    for(i <-((((node)\"Nodes") \ "Node") \\ "@label")) addNode(i.text.toInt)
+    for(i <-((((node)\"Nodes") \ "Node") )) addNode(new Node(i))
     for(n <-((((node)\"Nodes") \ "Node") \\ "Edge")){ 
       val s:Int = (n \ "source").text.toInt
       val d:Int = (n \ "destination").text.toInt
