@@ -1,4 +1,5 @@
 package graph
+
 import scala.collection.mutable.ListBuffer
 
 abstract class Traversal {
