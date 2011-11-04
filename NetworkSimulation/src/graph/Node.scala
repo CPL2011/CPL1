@@ -1,26 +1,45 @@
 package graph
 import org.ubiety.ubigraph.UbigraphClient
 import scala.util.Random
+import scala.collection.mutable.HashMap
 
 class Node(label: Int) {
   def this(n:scala.xml.Node) = this((n\"@label").text.toInt)
-  var connectedEdges: List[Edge] = Nil
-  //If you store a list of Nodes the Node has to do some kind of Query to find the Edge that connects this neigbour.
-  //Shouldn't it be better to keep a list of Edges? Query's are verry cpu intensive.
-  //---> Since the edges were stored in a hashmap and you'd know the labels of the source and dest node (which serve as
-  //---> the key to the map, retrieval of the edge would only require constant time. Nevertheless, storing edges 
-  //---> is indeed more logical. So altough it does create the awkward situation were a node 
-  //---> can access itself through each edge it stores, I've made the change.
-  
+  var originatingEdges = new HashMap[(Int, Int), Edge]()
+  var arrivingEdges = new HashMap[(Int, Int), Edge]()
+ 
   def getLabel : Int = label
-  def addConnectedEdge(edge : Edge) = connectedEdges = edge :: connectedEdges
-  def removeConnectedEdge(edge: Edge) = connectedEdges diff List(edge)
-  def getConnectedEdges : List[Edge] = connectedEdges
-  def visualize(ubigraphClient : UbigraphClient) = ubigraphClient.newVertex(label)
+  def getOriginatingEdges = originatingEdges
+  def addNeighbour(node : Node) = {
+    var edge = new Edge(this, node)
+    var newEntry = (((this.getLabel, node.getLabel), edge))
+    originatingEdges += newEntry
+    node.arrivingEdges += newEntry
+  }
   
-  def toXML() = <Node label={label.toString()}>
-      {connectedEdges.map(e=>e.toXML())}
-    </Node>
+  def removeNeighbour(nodeID: Int) = {
+    originatingEdges.get((label, nodeID)) match {
+      case Some(edge) => {
+        originatingEdges -= ((label, nodeID))
+        edge.getDestination().arrivingEdges -= ((label, nodeID))
+      }
+      case None => {
+       	System.err.println("The specified edge cannot be removed since it is no member of this graph")
+      }
+    } 
+  }
+  
+  def remove = {
+    arrivingEdges.values.foreach(e => e.getSource().removeNeighbour(getLabel))
+    //after this run arrivingEdges should be empty
+    originatingEdges.values.foreach(e => removeNeighbour(e.getDestination.getLabel))
+    //after this run originatingEdges should be empty
+  }
+  
+  def visualize(ubigraphClient : UbigraphClient) = ubigraphClient.newVertex(label)
+ /// def toXML() = <Node label={label.toString()}>
+  //    {originatingEdges.map(e=>e.toXML())}
+  //  </Node>
   
   
 }
@@ -63,12 +82,12 @@ class InfectableNode(label:Int,infectionChance:Float) extends Node(label) with I
   	{iChance = f}
   
   def infect(){
-    isInfected(getConnectedEdges.size,getInfectionChance())
+    isInfected(originatingEdges.size,getInfectionChance())
   }
-  override def toXML() = <Node label={label.toString()}>
-      {connectedEdges.map(e=>e.toXML())}
-      <infected>{infected}</infected>
-      <infectionChance>{iChance}</infectionChance>
-      <dead>{dead}</dead>
-    </Node>
+  //override def toXML() = <Node label={label.toString()}>
+  //    {originatingEdges.map(e=>e.toXML())}
+  //    <infected>{infected}</infected>
+  //    <infectionChance>{iChance}</infectionChance>
+  //    <dead>{dead}</dead>
+  //  </Node>
 }

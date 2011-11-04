@@ -7,10 +7,6 @@ import scala.collection.mutable.ListBuffer
 
   class Graph {
   var nodes = new HashMap[Int, Node]()
-  var edges = new HashMap[(Int, Int), Edge]()
-  
-  def getNodes():HashMap[Int, Node] = nodes
-  def getEdges():HashMap[(Int, Int), Edge] = edges
   
   def addNode(nodeID: Int) = 
     if(!nodes.contains(nodeID)) nodes += ((nodeID, new Node(nodeID)))
@@ -20,8 +16,9 @@ import scala.collection.mutable.ListBuffer
   def removeNode(nodeID: Int) = 
     nodes.get(nodeID) match {
       case Some(node) => {
-	edges.filterKeys({case (x, y) => x == nodeID || y == nodeID }).foreach({case (edgeKey, edge) => edge.remove}) 
-	nodes -= nodeID
+	    //edges.filterKeys({case (x, y) => x == nodeID || y == nodeID }).foreach({case (edgeKey, edge) => edge.remove}) 
+        node.remove
+	    nodes -= nodeID
       }
       case None => {
 	System.err.println("The specified node cannot be removed since it is no member of this graph")
@@ -33,22 +30,21 @@ import scala.collection.mutable.ListBuffer
   def addEdge(source: Int, destination: Int) = {
     (nodes.get(source), nodes.get(destination)) match {
       case (Some(sourceNode), Some(destinationNode)) => {
-	edges += (((source, destination), new Edge(sourceNode, destinationNode)))
+        sourceNode.addNeighbour(destinationNode)
       }
       case _ => {
-	System.err.println("Both the source and destination id have to specify existing nodes in the graph. This is not the case")
+	    System.err.println("Both the source and destination id have to specify existing nodes in the graph. This is not the case")
       }
     }
   }
 
   def removeEdge(source: Int, destination: Int) = {
-    edges.get((source, destination)) match {
-      case Some(edge) => {
-	edge.remove
-	edges -= ((source, destination))
+    (nodes.get(source), nodes.get(destination)) match {
+      case (Some(sourceNode), Some(destinationNode)) => {
+        sourceNode.removeNeighbour(destination)
       }
-      case None => {
-	System.err.println("The specified edge cannot be removed since it is no member of this graph")
+      case _ => {
+	    System.err.println("The specified edge cannot be removed since it is no member of this graph")
       }
     }
   }
@@ -68,9 +64,10 @@ import scala.collection.mutable.ListBuffer
   def visualize(hasServer : Boolean, serverUrl : String) = {
     var ubigraphClient = new UbigraphClient
     if(hasServer == true) ubigraphClient = new UbigraphClient(serverUrl)
-    //var ubigraphClient = new UbigraphClient
     nodes.values.foreach(e => e.visualize(ubigraphClient))
-    edges.values.foreach(e => e.visualize(ubigraphClient))
+    var edges : List[Edge] = Nil
+    nodes.values.foreach(e => edges = edges ++ e.originatingEdges.values.toList)
+    edges.foreach(e => e.visualize(ubigraphClient))
   }
 }
 

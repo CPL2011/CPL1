@@ -6,16 +6,16 @@ import scala.xml.NodeSeq$
 class XMLGraph extends Graph{
   
  
-  def toXML() = <Graph>
-  <Nodes>
-    {nodes.values.map(n=>n.toXML())}
-  </Nodes>
-</Graph>
+//  def toXML() = <Graph>
+//  <Nodes>
+//    {nodes.values.map(n=>n.toXML())}
+//  </Nodes>
+// </Graph>
 		  		
   def loadGraph(path:String){
     val node:scala.xml.Node = loadXML(path)
     nodes.clear()
-    edges.clear()
+   // edges.clear()
     for(i <-((((node)\"Nodes") \ "Node") )) addNode(new Node(i))
     for(n <-((((node)\"Nodes") \ "Node") \\ "Edge")){ 
       val s:Int = (n \ "source").text.toInt
@@ -31,7 +31,7 @@ class XMLGraph extends Graph{
     if(f.delete())    println("deleted old xml")
     else println("could not delete old xml!")
   }
-    scala.xml.XML.save(path,toXML)
+  //  scala.xml.XML.save(path,toXML)
   }
   
   def loadXML(path:String)=    scala.xml.XML.loadFile(path)

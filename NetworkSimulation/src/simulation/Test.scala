@@ -38,8 +38,9 @@ object Test extends Application {
   graph.addEdge(1, 21)
 
   //print the object ids of the reachable nodes of each node it visits (in order)
-  graph.traverse(BreadthFirstTraversal, e => println(e.getConnectedEdges.toString), 1) 
-
+  System.err.println("try")
+  graph.traverse(BreadthFirstTraversal, e => println(e.originatingEdges.toString), 1) 
+  System.err.println("succeed")
   //check if two nodes are connected
   var connected = false
   graph.traverse(BreadthFirstTraversal, node => if (node.getLabel == 9) connected = true, 2) 
@@ -50,12 +51,12 @@ object Test extends Application {
   graph.traverse(BreadthFirstTraversal, node => nodeListBuffer += node, 1)
   System.out.println("The ListBuffer contains an ordered list of size " + nodeListBuffer.size)
 
-  graph.traverse(DepthFirstTraversal, e => println(e.getConnectedEdges.toString), 100) // should trigger an error message
-  //graph.removeEdge(1, 2)
-  //graph.removeEdge(1, 3)
-  //graph.removeEdge(1, 21)
-  //graph.removeEdge(1, 20)
-  //graph.removeEdge(1, 19)
+  graph.traverse(DepthFirstTraversal, e => println(e.originatingEdges.toString), 100) // should trigger an error message
+  graph.removeEdge(1, 2)
+  graph.removeEdge(1, 3)
+  graph.removeEdge(1, 21)
+  graph.removeEdge(1, 20)
+  graph.removeEdge(1, 19)
   graph.removeNode(1)
   graph.visualize(test.has, test.svr) // should create a successful visualisation
   System.out.println("---------------------------")
@@ -64,7 +65,7 @@ object Test extends Application {
 //  graph.storeGraph()
 //  println("graph stored")
 //  graph.closeDb()
-//  
+  
 //  println("retrieving graph from file")
 //  val g = PersistenceGraph.getGraphFromDb("test.db")
 //  val l = g.queryDb((n:Node)=>true)
@@ -76,15 +77,18 @@ object Test extends Application {
 //
 //  g.closeDb()
 //  g.deleteDb("test.db")
+
+  
+  
   graph.saveGraph("test.xml")
   val g:XMLGraph = new XMLGraph()
   g.loadGraph("test.xml")
   println("original: ")
-   println(graph.nodes)
-    println(graph.edges)
-   println("loaded: ")
+  println(graph.nodes)
+  //println(graph.edges)
+  println("loaded: ")
   println(g.nodes)
-   println(g.edges)
+  //println(g.edges)
 }
 
 class TestDescription(hasServer: Boolean, server: String) {

@@ -10,13 +10,14 @@ object BreadthFirstTraversal extends Traversal {
       visited = node :: visited
       queue += node
       while (!queue.isEmpty) {
-    	  queue.head.getConnectedEdges.reverse.foreach(
-    			  e => if (!visited.contains(e.getDestination())) { 
-    				  f(e.getDestination()) 
-    				  visited = e.getDestination() :: visited
-    				  queue += e.getDestination()
-    			  })
-    			  queue = queue.tail;
+        queue.head.getOriginatingEdges.values.foreach(
+            e => if (!visited.contains(e.getDestination())) { 
+              f(e.getDestination()) 
+              visited = e.getDestination() :: visited
+              queue += e.getDestination()
+            }
+        )
+        queue = queue.tail;
       }
     }
     bft(f, node)
