@@ -3,16 +3,14 @@ import org.ubiety.ubigraph.UbigraphClient
 import scala.util.Random
 import scala.collection.mutable.HashMap
 
-class Node(label: Int) {
+class Node(val label: Int) {
   def this(n:scala.xml.Node) = this((n\"@label").text.toInt)
   var originatingEdges = new HashMap[(Int, Int), Edge]()
   var arrivingEdges = new HashMap[(Int, Int), Edge]()
  
-  def getLabel : Int = label
-  def getOriginatingEdges = originatingEdges
   def addNeighbour(node : Node) = {
     var edge = new Edge(this, node)
-    var newEntry = (((this.getLabel, node.getLabel), edge))
+    var newEntry = (((this.label, node.label), edge))
     originatingEdges += newEntry
     node.arrivingEdges += newEntry
   }
@@ -21,7 +19,7 @@ class Node(label: Int) {
     originatingEdges.get((label, nodeID)) match {
       case Some(edge) => {
         originatingEdges -= ((label, nodeID))
-        edge.getDestination().arrivingEdges -= ((label, nodeID))
+        edge.destination.arrivingEdges -= ((label, nodeID))
       }
       case None => {
        	System.err.println("The specified edge cannot be removed since it is no member of this graph")
@@ -30,9 +28,9 @@ class Node(label: Int) {
   }
   
   def remove = {
-    arrivingEdges.values.foreach(e => e.getSource().removeNeighbour(getLabel))
+    arrivingEdges.values.foreach(e => e.source.removeNeighbour(label))
     //after this run arrivingEdges should be empty
-    originatingEdges.values.foreach(e => removeNeighbour(e.getDestination.getLabel))
+    originatingEdges.values.foreach(e => removeNeighbour(e.destination.label))
     //after this run originatingEdges should be empty
   }
   
@@ -47,9 +45,6 @@ class Node(label: Int) {
 trait Infectable{
   var infected:Boolean = false
   var dead:Boolean = false
-  
-  def isDead():Boolean = dead
-  
 
   def isInfected(infectedNeighbours:Int,infectionChance:Float):Boolean = {
     if(dead) false
@@ -68,21 +63,15 @@ trait Infectable{
   }
 }
 
-class InfectableNode(label:Int,infectionChance:Float) extends Node(label) with Infectable{
+class InfectableNode(label:Int, var infectionChance:Float) extends Node(label) with Infectable{
   def this(n:scala.xml.Node) = {
     this((n\"@label").text.toInt,(n\"infectionChance").text.toFloat)
     dead = (n\"dead").text.toBoolean
     infected = (n\"infected").text.toBoolean
   }
-  var iChance = infectionChance;
-  
-  def getInfectionChance():Float = iChance
-  
-  def setInfectionChance(f:Float):Unit =
-  	{iChance = f}
   
   def infect(){
-    isInfected(originatingEdges.size,getInfectionChance())
+    isInfected(originatingEdges.size, infectionChance)
   }
   //override def toXML() = <Node label={label.toString()}>
   //    {originatingEdges.map(e=>e.toXML())}

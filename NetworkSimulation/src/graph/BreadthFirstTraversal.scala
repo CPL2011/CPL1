@@ -10,11 +10,11 @@ object BreadthFirstTraversal extends Traversal {
       visited = node :: visited
       queue += node
       while (!queue.isEmpty) {
-        queue.head.getOriginatingEdges.values.foreach(
-            e => if (!visited.contains(e.getDestination())) { 
-              f(e.getDestination()) 
-              visited = e.getDestination() :: visited
-              queue += e.getDestination()
+        queue.head.originatingEdges.values.foreach(
+            e => if (!visited.contains(e.destination)) { 
+              f(e.destination) 
+              visited = e.destination :: visited
+              queue += e.destination
             }
         )
         queue = queue.tail;

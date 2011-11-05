@@ -6,6 +6,7 @@ import scala.collection.mutable.ListBuffer
 
 object Test extends Application {
   
+  //var test = new TestDescription(true, "http://192.168.56.101:20738/RPC2")
   //var test = new TestDescription(true,"http://192.168.253.128:20738/RPC2")
   var test = new TestDescription(false,"")
   var graph = new XMLGraph()
@@ -43,7 +44,7 @@ object Test extends Application {
   System.err.println("succeed")
   //check if two nodes are connected
   var connected = false
-  graph.traverse(BreadthFirstTraversal, node => if (node.getLabel == 9) connected = true, 2) 
+  graph.traverse(BreadthFirstTraversal, node => if (node.label == 9) connected = true, 2) 
   if (connected) System.out.println("connected") else System.out.println("unconnected") 
 
   //retrieve an ordered list of the visited nodes 

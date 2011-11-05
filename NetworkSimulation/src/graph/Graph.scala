@@ -11,7 +11,7 @@ import scala.collection.mutable.ListBuffer
   def addNode(nodeID: Int) = 
     if(!nodes.contains(nodeID)) nodes += ((nodeID, new Node(nodeID)))
   def addNode(node: Node) = 
-    if(!nodes.contains(node.getLabel)) nodes += ((node.getLabel, node))
+    if(!nodes.contains(node.label)) nodes += ((node.label, node))
     
   def removeNode(nodeID: Int) = 
     nodes.get(nodeID) match {
