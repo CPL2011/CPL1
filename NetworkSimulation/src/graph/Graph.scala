@@ -1,7 +1,7 @@
 package graph
 
 import org.ubiety.ubigraph.UbigraphClient
-import scala.collection.mutable.HashMap
+import scala.collection.immutable.HashMap
 import scala.collection.mutable.ListBuffer
 
 

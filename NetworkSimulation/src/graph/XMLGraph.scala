@@ -2,6 +2,7 @@ package graph
 import scala.xml.parsing.ConstructingParser$
 import java.io.File
 import scala.xml.NodeSeq$
+import scala.collection.immutable.HashMap
 
 class XMLGraph extends Graph{
   
@@ -14,7 +15,8 @@ class XMLGraph extends Graph{
 		  		
   def loadGraph(path:String){
     val node:scala.xml.Node = loadXML(path)
-    nodes.clear()
+    //nodes.clear()
+    nodes = new HashMap[Int, Node]()
    // edges.clear()
     for(i <-((((node)\"Nodes") \ "Node") )) addNode(new Node(i))
     for(n <-((((node)\"Nodes") \ "Node") \\ "Edge")){ 

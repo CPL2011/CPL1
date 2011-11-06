@@ -7,6 +7,7 @@ import com.db4o.query.Predicate
 import com.db4o.ObjectSet
 import com.db4o.config.EmbeddedConfiguration
 import com.db4o.Db4oEmbedded
+import com.db4o.ta.TransparentActivationSupport
 
 
 
@@ -21,9 +22,27 @@ def openDb(config:EmbeddedConfiguration,path:String):Unit = db = Db4oEmbedded.op
 
 def openDb(path:String):Unit = {
   val config:EmbeddedConfiguration  = Db4oEmbedded.newConfiguration();
-  config.common().objectClass(classOf[Graph]).cascadeOnUpdate(true);
-  config.common().objectClass(classOf[Edge]).cascadeOnActivate(true);//still does not work-_-
-  config.common().objectClass(classOf[Node]).cascadeOnActivate(true);
+	/*config.common().objectClass("class graph.Node").cascadeOnActivate(true);
+	config.common().objectClass("class graph.Edge").cascadeOnActivate(true);
+	config.common().objectClass("class graph.PersistenceGraph").cascadeOnActivate(true);
+	config.common().objectClass("class graph.Graph").cascadeOnActivate(true);
+	config.common().objectClass("class scala.collection.mutable.HashMap").cascadeOnActivate(true);
+	
+	config.common().objectClass("class graph.Node").cascadeOnDelete(true);
+	config.common().objectClass("class graph.Edge").cascadeOnDelete(true);
+	config.common().objectClass("class graph.PersistenceGraph").cascadeOnDelete(true);
+	config.common().objectClass("class graph.Graph").cascadeOnDelete(true);
+	config.common().objectClass("class scala.collection.mutable.HashMap").cascadeOnDelete(true);
+	
+	config.common().objectClass("class graph.Node").cascadeOnUpdate(true);
+	config.common().objectClass("class graph.Edge").cascadeOnUpdate(true);
+	config.common().objectClass("class graph.PersistenceGraph").cascadeOnUpdate(true);
+	config.common().objectClass("class graph.Graph").cascadeOnUpdate(true);
+	config.common().objectClass("class scala.collection.mutable.HashMap").cascadeOnUpdate(true);
+	config.common().activationDepth(100);
+	config.common().updateDepth(100);
+	config.common().maxStackDepth(100);*/
+	config.common().add(new TransparentActivationSupport());
   db = Db4oEmbedded.openFile(config,path)
 }
 
