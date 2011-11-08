@@ -39,9 +39,7 @@ object Test extends Application {
   graph.addEdge(1, 21)
 
   //print the object ids of the reachable nodes of each node it visits (in order)
-  System.err.println("try")
   graph.traverse(BreadthFirstTraversal, e => println(e.originatingEdges.toString), 1) 
-  System.err.println("succeed")
   //check if two nodes are connected
   var connected = false
   graph.traverse(BreadthFirstTraversal, node => if (node.label == 9) connected = true, 2) 
@@ -56,11 +54,18 @@ object Test extends Application {
   graph.removeEdge(1, 2)
   graph.removeEdge(1, 3)
   graph.removeEdge(1, 21)
-  graph.removeEdge(1, 20)
-  graph.removeEdge(1, 19)
-  graph.removeNode(1)
-  graph.visualize // should create a successful visualisation
+//  graph.removeEdge(1, 20)
+//  graph.removeEdge(1, 19)
+//  graph.removeNode(1)
+
+  graph.visualize
+  Thread.sleep(5000)
+  graph.removeVisualization
+  
+  
   System.out.println("---------------------------")
+  
+  
   
 //  println("testing db4o...")
 //  graph.storeGraph()
@@ -83,6 +88,8 @@ object Test extends Application {
   
   graph.saveGraph("test.xml")
   val g:XMLGraph = new XMLGraph()
+
+  
   g.loadGraph("test.xml")
   println("original: ")
   println(graph.nodes)
@@ -90,6 +97,7 @@ object Test extends Application {
   println("loaded: ")
   println(g.nodes)
   //println(g.edges)
+  
 }
 
 class TestDescription(hasServer: Boolean, server: String) {

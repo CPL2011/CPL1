@@ -36,7 +36,18 @@ class Node(val label: Int) {
   
   def step(timestamp:Int, duration:Int){}
   
-  def visualize(ubigraphClient : UbigraphClient) = ubigraphClient.newVertex(label)
+  def visualize(ubigraphClient : UbigraphClient) = {
+    if (ubigraphClient.newVertex(label) == -1) {
+      System.err.println("Node " + label + " has already been visualized")
+    }
+  }
+  
+  def removeVisualization(ubigraphClient : UbigraphClient) = {
+    if (ubigraphClient.removeVertex(label) == -1) {
+      System.err.println("Node " + label + " has not yet been visualized")
+    }
+  }
+  
  /// def toXML() = <Node label={label.toString()}>
   //    {originatingEdges.map(e=>e.toXML())}
   //  </Node>
