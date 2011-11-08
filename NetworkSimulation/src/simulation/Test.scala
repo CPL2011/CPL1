@@ -59,7 +59,7 @@ object Test extends Application {
   graph.removeEdge(1, 20)
   graph.removeEdge(1, 19)
   graph.removeNode(1)
-  graph.visualize(test.has, test.svr) // should create a successful visualisation
+  graph.visualize // should create a successful visualisation
   System.out.println("---------------------------")
   
 //  println("testing db4o...")

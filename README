@@ -6,6 +6,8 @@ SCALA:
 (undirected edges are represented using two directed edges), get all Nodes, 
 traversing the graph: Breadth-first, Depth-first)
 - Node, Edge and Graph will use a 'visualization' trait to provide the Ubigraph functionality
+- visualization needs some init , refresh functionality
+if you call visualization multiple times. You get duplicates in ubigraph. But there should be a way to add and visualize new Nodes/Edges during simulation. I created some temporary methods in the example.fluspread but this is clearly not enough.
 - Simulation Engine: ...?
 
 XML: 
@@ -21,6 +23,8 @@ _____________
 - the db4o storage still does not work properly and I probably do not have the time today/tomorrow to fix it... 
 The problem is that db4o does not store the references that are stored in the graph object. I tried the config
 method, but it did not work.
+- Simulation Engine and TurnBasedEngine started (Jordi)
+- Continued coding Flu Spreading from Node.infection
 
 
 
@@ -32,7 +36,7 @@ _____________
 - Because of the problems with the object databases that I had(I'm sure that I probably made some stupid
 mistakes), I have implemented a load/store mechanism based on xml. It is a bit more code that with db4o,
 but at least it works:) Just do "graph.save(path)" to save it, and to load from a file use "graph2.loadGraph(path)"
-
+- Fixed db4o store
 
 
 

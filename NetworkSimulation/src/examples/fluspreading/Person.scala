@@ -20,7 +20,7 @@ class Person(label:Int) extends Node(label) {
 	
 	var infectionrate:Float = INFECTIONRATE
 	var status:InfectionStatus = Susceptible
-	var infectionDuration:Int = 1 * SimulationTime.TICKS_PER_HOUR
+	var infectionDuration:Int = 20 * SimulationTime.TICKS_PER_MINUTE
 	
     override def visualize(ubigraphClient : UbigraphClient) = {
 	  var color = status match {
@@ -36,7 +36,11 @@ class Person(label:Int) extends Node(label) {
   override def step(timestamp : Int, duration : Int) {
     status match {
 	    case Susceptible => expose(duration)
-	    case Infectious => return
+	    case Infectious => 
+	      if(infectionDuration>=0)
+	        infectionDuration -= duration 
+	      else 
+	        status = InfectionStatus.Removed
 	    case Removed => return
 	  }
     return
@@ -44,7 +48,7 @@ class Person(label:Int) extends Node(label) {
 	
   private def expose(duration:Int) {
     var infectedNeighbours = 1
-    var exposurerate = Math.min(1, duration / SimulationTime.TICKS_PER_MINUTE)
+    var exposurerate = Math.min(1, duration * 1.0f / SimulationTime.TICKS_PER_MINUTE)
     if(Random.nextFloat()> Math.pow(1-infectionrate*exposurerate,infectedNeighbours))
       status = Infectious
   }

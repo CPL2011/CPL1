@@ -7,6 +7,7 @@ import scala.collection.mutable.ListBuffer
 
   class Graph {
   var nodes = new HashMap[Int, Node]()
+  var ubigraphClient = new UbigraphClient()
   
   def addNode(nodeID: Int) = 
     if(!nodes.contains(nodeID)) nodes += ((nodeID, new Node(nodeID)))
@@ -61,9 +62,7 @@ import scala.collection.mutable.ListBuffer
     
   }
   
-  def visualize(hasServer : Boolean, serverUrl : String) = {
-    var ubigraphClient = new UbigraphClient
-    if(hasServer == true) ubigraphClient = new UbigraphClient(serverUrl)
+  def visualize = {
     nodes.values.foreach(e => e.visualize(ubigraphClient))
     var edges : List[Edge] = Nil
     nodes.values.foreach(e => edges = edges ++ e.originatingEdges.values.toList)
