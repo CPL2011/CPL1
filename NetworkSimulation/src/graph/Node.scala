@@ -34,6 +34,8 @@ class Node(val label: Int) {
     //after this run originatingEdges should be empty
   }
   
+  def step(timestamp:Int, duration:Int){}
+  
   def visualize(ubigraphClient : UbigraphClient) = ubigraphClient.newVertex(label)
  /// def toXML() = <Node label={label.toString()}>
   //    {originatingEdges.map(e=>e.toXML())}
@@ -73,6 +75,8 @@ class InfectableNode(label:Int, var infectionChance:Float) extends Node(label) w
   def infect(){
     isInfected(originatingEdges.size, infectionChance)
   }
+  
+  
   //override def toXML() = <Node label={label.toString()}>
   //    {originatingEdges.map(e=>e.toXML())}
   //    <infected>{infected}</infected>

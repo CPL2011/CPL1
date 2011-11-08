@@ -4,7 +4,7 @@ import com.db4o.Db4o
 import com.db4o.Db4oEmbedded
 
 object TestDB4O extends Application {
-  var graph = new PersistenceGraph("jordidb");
+  var graph = new PersistenceGraph("jordidb")
   
   var i = 1
   while(i<=21) {
