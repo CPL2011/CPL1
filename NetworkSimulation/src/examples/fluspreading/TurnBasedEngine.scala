@@ -3,22 +3,26 @@ import graph.Graph
 import graph.Traversal
 import graph.Node
 
-class TurnBasedEngine(graph: Graph,traverser:Traversal) extends SimulationEngine(graph){
+class TurnBasedEngine(graph: Graph) extends SimulationEngine(graph){
 	var ticksPerStep:Int = 10
 	
 	
    var turnClients:List[TurnClient] = List[TurnClient]()
   
 	override def run() {
+	  if(!shouldContinue)
+	    return
+	  
 	  while(shouldContinue) {
-	    graph.traverse(traverser,doTurn,1)
-	    turnClients.foreach(c=>c.step(currentTime,ticksPerStep))
+	    var itt:Iterator[Node] = graph.nodes.valuesIterator
+	    while(itt.hasNext) {
+	      var next:Node = itt.next
+	      next.doTurn(currentTime,ticksPerStep)
+	      turnClients.foreach(c=>c.doEachTurn(currentTime,ticksPerStep))
+	    }
+	    turnClients.foreach(c=>c.doTurn(currentTime,ticksPerStep))
 	    currentTime += ticksPerStep
 	  }
-	}
-	
-	def doTurn(n:Node){
-	  n.step(currentTime, ticksPerStep)
 	}
 	
 	def addTurnClient(c:TurnClient) {
@@ -27,5 +31,6 @@ class TurnBasedEngine(graph: Graph,traverser:Traversal) extends SimulationEngine
 }
 
 trait TurnClient {
-  def step(currentTime:Int, duration:Int)
+  def doTurn(currentTime:Int, duration:Int)
+  def doEachTurn(currentTime:Int, duration:Int){}
 }

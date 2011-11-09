@@ -11,10 +11,12 @@ object FluSpreading {
   var ubigraphClient:UbigraphClient = null
   
   def main(args: Array[String]) {
-      ubigraphClient = new UbigraphClient("http://192.168.132.129:20738/RPC2")
-	  var graph = new VisualGraph("jordidb",ubigraphClient)
+      //ubigraphClient = new UbigraphClient("http://192.168.132.129:20738/RPC2")
+     ubigraphClient = new UbigraphClient("http://192.168.132.130:20738/RPC2")
+	  var graph = new VisualGraph(ubigraphClient)
       
-      graph.addNode(new Person(0))
+      var p:Person = new Person(0)
+      graph.addNode(p)
       var i:Int = 1
       while(i < 100){
     	  graph.addNode(new Person(i))
@@ -26,8 +28,10 @@ object FluSpreading {
 	  ubigraphClient.clear()
 	  graph.traverse(BreadthFirstTraversal, initVisualisation,0)
 	  
-	  var engine = new TurnBasedEngine(graph,BreadthFirstTraversal)
-      
+	  //var engine = new TurnBasedEngine(graph)
+	  var engine = new EventBasedEngine(graph)
+	  //var engine = new RoundBasedEngine(graph)
+	  
       engine.addNecessaryCondition(new Condition{
         def shouldContinue:Boolean = {
           if(engine.getCurrentTime < SimulationTime.TICKS_PER_HOUR * 4)
@@ -36,8 +40,12 @@ object FluSpreading {
         }
       })
       
-      engine.addTurnClient(graph)
+      //engine.addTurnClient(graph)
+      engine.addEventClient(graph)
+      
       engine.run
+      
+      p
   }
   
   	def initVisualisation(n:Node) {
@@ -45,17 +53,4 @@ object FluSpreading {
   	    case p:Person=> p.initVisualization(ubigraphClient)
   	  }
 	}
-}
-class VisualGraph(dbname:String,ubiClient2:UbigraphClient) extends PersistenceGraph(dbname) with TurnClient {
-  val REFRESH_RATE = 2 * SimulationTime.TICKS_PER_MINUTE
-  var elapsedTime = REFRESH_RATE + 1
-  ubigraphClient = ubiClient2
-  
-  def step(currentTime:Int, duration:Int) {
-    if(elapsedTime > REFRESH_RATE) {
-      visualize
-      elapsedTime = 0
-    }
-    elapsedTime += duration
-  }
 }

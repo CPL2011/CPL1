@@ -20,7 +20,10 @@ abstract class SimulationEngine(graph:Graph) {
     conditions ::= c
   }
   
-  def getCurrentTime:Int = currentTime
+  def getCurrentTime:Int = {
+    val result = currentTime
+    return result
+  }
 }
 
 abstract class Condition {

@@ -2,6 +2,7 @@ package graph
 import org.ubiety.ubigraph.UbigraphClient
 import scala.util.Random
 import scala.collection.mutable.HashMap
+import examples.fluspreading.Event
 
 class Node(val label: Int) {
   def this(n:scala.xml.Node) = this((n\"@label").text.toInt)
@@ -34,7 +35,9 @@ class Node(val label: Int) {
     //after this run originatingEdges should be empty
   }
   
-  def step(timestamp:Int, duration:Int){}
+  def doTurn(timestamp:Int, duration:Int){}
+  def doRound(timestamp:Int, duration:Int){}
+  def notify(event:Event){}
   
   def visualize(ubigraphClient : UbigraphClient) = {
     if (ubigraphClient.newVertex(label) == -1) {
