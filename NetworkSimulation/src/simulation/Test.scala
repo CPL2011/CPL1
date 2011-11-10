@@ -3,18 +3,21 @@ package simulation
 
 import graph._
 import scala.collection.mutable.ListBuffer
-
+import simulation.stat.Statistics
+class testGraph extends XMLGraph with Statistics
 object Test extends Application {
   
   //var test = new TestDescription(true, "http://192.168.56.101:20738/RPC2")
   //var test = new TestDescription(true,"http://192.168.253.128:20738/RPC2")
   var test = new TestDescription(false,"")
-  var graph = new XMLGraph()
-  
+  var graph = new testGraph()
+  graph.addStatistic(graph.numberOfNodes,"NoN")
+  graph.addStatistic(graph.averageNeighbores,"AvEdges")
 
   var i = 1
   while(i<=21) {
     graph.addNode(i)
+    if(i%5==0)graph.gatherStat(graph)
     i+=1
   }
   
@@ -23,21 +26,27 @@ object Test extends Application {
   graph.addEdge(2, 4)
   graph.addEdge(2, 5)  
   graph.addEdge(3, 6)
+  graph.gatherStat(graph)
   graph.addEdge(3, 7)
   graph.addEdge(4, 8)
   graph.addEdge(8, 9)
   graph.addEdge(5, 6)
+  graph.gatherStat(graph)
   graph.addEdge(10, 11)
   graph.addEdge(12, 13)
   graph.addEdge(6, 14)
   graph.addEdge(6, 15)
   graph.addEdge(15, 16)
+  graph.gatherStat(graph)
   graph.addEdge(15, 17)
   graph.addEdge(15, 18)
   graph.addEdge(1, 19)
   graph.addEdge(1, 20)
   graph.addEdge(1, 21)
-
+  graph.gatherStat(graph)
+  
+  graph.writeStatisticsToFile("test.txt")
+  
   //print the object ids of the reachable nodes of each node it visits (in order)
   graph.traverse(BreadthFirstTraversal, e => println(e.originatingEdges.toString), 1) 
   //check if two nodes are connected
@@ -86,17 +95,17 @@ object Test extends Application {
 
   
   
-  graph.saveGraph("test.xml")
-  val g:XMLGraph = new XMLGraph()
-
-  
-  g.loadGraph("test.xml")
-  println("original: ")
-  println(graph.nodes)
-  //println(graph.edges)
-  println("loaded: ")
-  println(g.nodes)
-  //println(g.edges)
+//  graph.saveGraph("test.xml")
+//  val g:XMLGraph = new XMLGraph()
+//
+//  
+//  g.loadGraph("test.xml")
+//  println("original: ")
+//  println(graph.nodes)
+//  //println(graph.edges)
+//  println("loaded: ")
+//  println(g.nodes)
+//  //println(g.edges)
   
 }
 
