@@ -62,19 +62,19 @@ import scala.collection.mutable.ListBuffer
     
   }
   
-  def visualize = {
-    nodes.values.foreach(e => e.visualize(ubigraphClient))
-    var edges : List[Edge] = Nil
-    nodes.values.foreach(e => edges = edges ++ e.originatingEdges.values.toList)
-    edges.foreach(e => e.visualize(ubigraphClient))
-  }
+//  def visualize = {
+//    nodes.values.foreach(e => e.visualize(ubigraphClient))
+//    var edges : List[Edge] = Nil
+//    nodes.values.foreach(e => edges = edges ++ e.originatingEdges.values.toList)
+//    edges.foreach(e => e.visualize(ubigraphClient))
+//  }
   
-  def removeVisualization = {
-    nodes.values.foreach(e => e.removeVisualization(ubigraphClient))
-    //var edges : List[Edge] = Nil
-    //nodes.values.foreach(e => edges = edges ++ e.originatingEdges.values.toList)
-    //edges.foreach(e => e.removeVisualization(ubigraphClient))
-  }  
+//  def removeVisualization = {
+//    nodes.values.foreach(e => e.removeVisualization(ubigraphClient))
+//    //var edges : List[Edge] = Nil
+//    //nodes.values.foreach(e => edges = edges ++ e.originatingEdges.values.toList)
+//    //edges.foreach(e => e.removeVisualization(ubigraphClient))
+//  }  
 }
 
 

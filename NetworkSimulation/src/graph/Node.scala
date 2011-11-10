@@ -39,17 +39,17 @@ class Node(val label: Int) {
   def doRound(timestamp:Int, duration:Int){}
   def notify(event:Event){}
   
-  def visualize(ubigraphClient : UbigraphClient) = {
-    if (ubigraphClient.newVertex(label) == -1) {
-      System.err.println("Node " + label + " has already been visualized")
-    }
-  }
+//  def visualize(ubigraphClient : UbigraphClient) = {
+//    if (ubigraphClient.newVertex(label) == -1) {
+//      System.err.println("Node " + label + " has already been visualized")
+//    }
+//  }
   
-  def removeVisualization(ubigraphClient : UbigraphClient) = {
-    if (ubigraphClient.removeVertex(label) == -1) {
-      System.err.println("Node " + label + " has not yet been visualized")
-    }
-  }
+//  def removeVisualization(ubigraphClient : UbigraphClient) = {
+//    if (ubigraphClient.removeVertex(label) == -1) {
+//      System.err.println("Node " + label + " has not yet been visualized")
+//    }
+//  }
   
  /// def toXML() = <Node label={label.toString()}>
   //    {originatingEdges.map(e=>e.toXML())}
