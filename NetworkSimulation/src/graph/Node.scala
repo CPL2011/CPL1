@@ -17,7 +17,7 @@ class Node(val label: Int) {
   
   def getChildren : List[Node] = {
     var children : List[Node] = Nil
-    arrivingEdges.values.foreach(e => children ::= e.source)
+    originatingEdges.values.foreach(e => children ::= e.destination)
     children
   }
   
