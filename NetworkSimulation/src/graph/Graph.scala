@@ -1,13 +1,11 @@
 package graph
 
-import org.ubiety.ubigraph.UbigraphClient
 import scala.collection.immutable.HashMap
 import scala.collection.mutable.ListBuffer
 
 
   class Graph {
   var nodes = new HashMap[Int, Node]()
-  var ubigraphClient = new UbigraphClient()
   
   def addNode(nodeID: Int) =  
     if(!nodes.contains(nodeID)) nodes += ((nodeID, new Node(nodeID)))

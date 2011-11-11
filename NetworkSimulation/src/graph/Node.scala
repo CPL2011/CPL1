@@ -9,6 +9,20 @@ class Node(val label: Int) {
   var originatingEdges = new HashMap[(Int, Int), Edge]()
   var arrivingEdges = new HashMap[(Int, Int), Edge]()
  
+  def getParents : List[Node] = {
+    var parents : List[Node] = Nil
+    arrivingEdges.values.foreach(e => parents ::= e.source)
+    parents
+  }
+  
+  def getChildren : List[Node] = {
+    var children : List[Node] = Nil
+    arrivingEdges.values.foreach(e => children ::= e.source)
+    children
+  }
+  
+  def getNeighbours : List[Node] = getParents ++ getChildren
+
   def addNeighbour(node : Node) = {
     var edge = new Edge(this, node)
     var newEntry = (((this.label, node.label), edge))
