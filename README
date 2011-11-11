@@ -9,6 +9,24 @@ traversing the graph: Breadth-first, Depth-first)
 - visualization needs some init , refresh functionality
 if you call visualization multiple times. You get duplicates in ubigraph. But there should be a way to add and visualize new Nodes/Edges during simulation. I created some temporary methods in the example.fluspread but this is clearly not enough.
 - Simulation Engine: ...?
+- I think the library must give the user some help(errors) to setup his custom Node. Some suggestions:
+
+* Create RoundGraph trait and add the entire graph to the engine. Trait will provide one of the functions below
+
+RoundGraph.getRoundClients():List[RoundClient]
+constructor RoundEngine(RoundGraph)
+
+or
+RoundGraph.doRound(timestamp:Int,duration:Int)
+this for each engineType of course.
+
+* Make Node abstract and create abstract method for doRound doTurn...
+In this case user must create all abstract functions but he desides wich he implements.
+
+Graph has no list of Edges...
+But he needs them in the visualize method,
+so we hack the liberary to get a list of edges.
+What was the reason that Graph Shouldn't have a list of Edges?
 
 XML: 
 - loading and storing...db4o? GraphML GEXP? get feedback
@@ -17,6 +35,41 @@ INSTALL UBIGRAPH:
 http://ubietylab.net/ubigraph/content/Docs/index.html#languagebindings (Java)
 (install apache-xmlrpc-3.1.3 and UbiGraph-alpa-0.2.4-Linux32-Debian-4)
 
+
+BUGS
+_____________
+* There is no way I can define myEdge extends Edge and add use this edge to connect two Nodes with each other.
+* With the new version of the graph I still need to overide the graph as I need the ubigraphClient variable to for the update function to work...
+
+Graph.visualize(UpdateVisualization) -> I find this kind of weard...
+where to visualize? How should I use this function..? 
+What if I want to change the initial visualization??
+
+Suggestion::::
+Perhaps provide dummy methods that the user can override. The methods will have basic functionality so by using super this functionality can be extended by the user. Method calls will be automaticaly by the framework and a parameter ubigraph will be delivered.
+
+Pseudocode framework
+- Node.initVisualization(ubigraphClient) {addNodeToUbigraph}
+- Node.visualize(ubigraphClient) {
+	//Perhaps to some automatic updateing to the node.
+	//Ex: If Node.color is added to library updates of colors can 	  be done here
+}
+
+
+Pseudocode myNode extends Node
+override def myNode.initVisualization(ubi){
+	//super.initVisualization(ubi)
+	set some extra parameters on the new object.
+	Perhaps the size of the structure.
+}
+
+override def myNode.visualize(ubi){
+	super.visualize(ubi)
+	//Add some custom visualization
+}
+
+
+- I need to update ubigraphClient for my server to work all right. So if you make ubigraphclient a val I can't visualize. Perhaps make two constructors of VisualizableGraph. One with the serverString and one Witout...
 
 IN PROGRESS
 _____________

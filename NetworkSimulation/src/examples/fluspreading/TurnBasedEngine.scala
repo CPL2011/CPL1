@@ -10,9 +10,7 @@ class TurnBasedEngine(graph: Graph) extends SimulationEngine(graph){
    var turnClients:List[TurnClient] = List[TurnClient]()
   
 	override def run() {
-	  if(!shouldContinue)
-	    return
-	  
+	  println("TurnBasedEngine started");
 	  while(shouldContinue) {
 	    var itt:Iterator[Node] = graph.nodes.valuesIterator
 	    while(itt.hasNext) {
@@ -23,6 +21,7 @@ class TurnBasedEngine(graph: Graph) extends SimulationEngine(graph){
 	    turnClients.foreach(c=>c.doTurn(currentTime,ticksPerStep))
 	    currentTime += ticksPerStep
 	  }
+	  println("TurnbasedEngine started");
 	}
 	
 	def addTurnClient(c:TurnClient) {

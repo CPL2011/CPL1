@@ -11,7 +11,13 @@ object InfectionStatus extends Enumeration {
 
 import InfectionStatus._
 
-class PersonInfected extends Event
+class PersonInfected(val person:Person) extends Event{
+	var name = "PersonInfected"
+}
+
+class PersonDead(val person:Person, time:Int) extends TimeBasedEvent(time){
+  var name = "PersonDead"
+}
 
 class Person(label:Int) extends Node(label) with TurnClient with RoundClient with EventClient{
 	val RED = "#ff0000"
@@ -23,19 +29,21 @@ class Person(label:Int) extends Node(label) with TurnClient with RoundClient wit
 	var infectionrate:Float = INFECTIONRATE
 	var status:InfectionStatus = Susceptible
 	var infectionDuration:Int = 20 * SimulationTime.TICKS_PER_MINUTE
+	var needsVisualization = true;
 	
 	var tempStatus:InfectionStatus = null
 	
-    override def visualize(ubigraphClient : UbigraphClient) = {
-	  var color = status match {
-	    case Susceptible => GREEN
-	    case Infectious => RED
-	    case Removed => BLUE
+    def refreshVisualization(ubigraphClient : UbigraphClient) = {
+	  if(needsVisualization){
+	    needsVisualization = false
+		  var color = status match {
+		    case Susceptible => GREEN
+		    case Infectious => RED
+		    case Removed => BLUE
+		  }
+		  ubigraphClient.setVertexAttribute(label,"color",color)
 	  }
-	  ubigraphClient.setVertexAttribute(label,"color",color)
 	}
-	
-	def initVisualization(ubigraphClient : UbigraphClient) = ubigraphClient.newVertex(label)
 	
 	private def getNextStatus(duration:Int):InfectionStatus = {
 		status match {
@@ -52,22 +60,38 @@ class Person(label:Int) extends Node(label) with TurnClient with RoundClient wit
 	}
 	
   override def doTurn(timestamp : Int, duration : Int) {
-	  status = getNextStatus(duration)
+	  updateStatus(getNextStatus(duration))
   }
   
   override def doRound(timestamp:Int, duration: Int) {
     tempStatus = getNextStatus(duration)
   }
   
-  override def nextRound { status = tempStatus }
+  override def nextRound { updateStatus( tempStatus ) }
 	
 	
   override def notify(event:Event){
     event match {
-      case e:PersonInfected => status = getNextStatus( 1 * SimulationTime.TICKS_PER_MINUTE)
+      case e:TriggerEvent => createEvent(new PersonInfected(this))
+      case e:PersonInfected =>
+        if( e.person.equals(this) )
+        	updateStatus(InfectionStatus.Infectious)
+        	createEvent(new PersonDead(this, e.getTimeStamp + 2000))
+        //status = getNextStatus( 1 * SimulationTime.TICKS_PER_MINUTE)
+      case e:PersonDead => 
+        if(e.person.equals(this))
+          updateStatus(InfectionStatus.Removed)
+      case _ => println("Unknown Event at Person" + event.name);
     }
   }
 	
+  private def updateStatus(s:InfectionStatus){
+    if(s.equals(status)) return
+    
+    status = s
+    needsVisualization = true;
+  }
+  
   private def expose(duration:Int) :InfectionStatus = {
     var infectedNeighbours = 1
     var exposurerate = Math.min(1, duration * 1.0f / SimulationTime.TICKS_PER_MINUTE)
