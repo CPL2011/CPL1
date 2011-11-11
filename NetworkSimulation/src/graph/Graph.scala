@@ -1,13 +1,11 @@
 package graph
 
-import org.ubiety.ubigraph.UbigraphClient
 import scala.collection.immutable.HashMap
 import scala.collection.mutable.ListBuffer
 
 
   class Graph {
   var nodes = new HashMap[Int, Node]()
-  var ubigraphClient = new UbigraphClient()
   
   def addNode(nodeID: Int) =  
     if(!nodes.contains(nodeID)) nodes += ((nodeID, new Node(nodeID)))
@@ -62,19 +60,19 @@ import scala.collection.mutable.ListBuffer
     
   }
   
-  def visualize = {
-    nodes.values.foreach(e => e.visualize(ubigraphClient))
-    var edges : List[Edge] = Nil
-    nodes.values.foreach(e => edges = edges ++ e.originatingEdges.values.toList)
-    edges.foreach(e => e.visualize(ubigraphClient))
-  }
+//  def visualize = {
+//    nodes.values.foreach(e => e.visualize(ubigraphClient))
+//    var edges : List[Edge] = Nil
+//    nodes.values.foreach(e => edges = edges ++ e.originatingEdges.values.toList)
+//    edges.foreach(e => e.visualize(ubigraphClient))
+//  }
   
-  def removeVisualization = {
-    nodes.values.foreach(e => e.removeVisualization(ubigraphClient))
-    //var edges : List[Edge] = Nil
-    //nodes.values.foreach(e => edges = edges ++ e.originatingEdges.values.toList)
-    //edges.foreach(e => e.removeVisualization(ubigraphClient))
-  }  
+//  def removeVisualization = {
+//    nodes.values.foreach(e => e.removeVisualization(ubigraphClient))
+//    //var edges : List[Edge] = Nil
+//    //nodes.values.foreach(e => edges = edges ++ e.originatingEdges.values.toList)
+//    //edges.foreach(e => e.removeVisualization(ubigraphClient))
+//  }  
 }
 
 

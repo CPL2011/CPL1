@@ -12,6 +12,20 @@ class Node(val label: Int) extends TurnClient with RoundClient with EventClient 
   var originatingEdges = new HashMap[(Int, Int), Edge]()
   var arrivingEdges = new HashMap[(Int, Int), Edge]()
  
+  def getParents : List[Node] = {
+    var parents : List[Node] = Nil
+    arrivingEdges.values.foreach(e => parents ::= e.source)
+    parents
+  }
+  
+  def getChildren : List[Node] = {
+    var children : List[Node] = Nil
+    originatingEdges.values.foreach(e => children ::= e.destination)
+    children
+  }
+  
+  def getNeighbours : List[Node] = getParents ++ getChildren
+
   def addNeighbour(node : Node) = {
     var edge = new Edge(this, node)
     var newEntry = (((this.label, node.label), edge))
@@ -43,17 +57,17 @@ class Node(val label: Int) extends TurnClient with RoundClient with EventClient 
   def nextRound {}
   def notify(event:Event){}
   
-  def visualize(ubigraphClient : UbigraphClient) = {
-    if (ubigraphClient.newVertex(label) == -1) {
-      System.err.println("Node " + label + " has already been visualized")
-    }
-  }
+//  def visualize(ubigraphClient : UbigraphClient) = {
+//    if (ubigraphClient.newVertex(label) == -1) {
+//      System.err.println("Node " + label + " has already been visualized")
+//    }
+//  }
   
-  def removeVisualization(ubigraphClient : UbigraphClient) = {
-    if (ubigraphClient.removeVertex(label) == -1) {
-      System.err.println("Node " + label + " has not yet been visualized")
-    }
-  }
+//  def removeVisualization(ubigraphClient : UbigraphClient) = {
+//    if (ubigraphClient.removeVertex(label) == -1) {
+//      System.err.println("Node " + label + " has not yet been visualized")
+//    }
+//  }
   
  /// def toXML() = <Node label={label.toString()}>
   //    {originatingEdges.map(e=>e.toXML())}
