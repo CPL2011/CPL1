@@ -60,6 +60,14 @@ import scala.collection.mutable.ListBuffer
     
   }
   
+  def traverse(traverser: Traversal, f: Node => Unit) = {
+    var visitedNodes = new ListBuffer[Node]()
+    while(nodes.values.toList.diff(visitedNodes).size != 0) {
+      traverser.traverse(node => {f(node); visitedNodes += node}, nodes.values.toList.diff(visitedNodes).first)
+    }
+  }
+  
+  
 //  def visualize = {
 //    nodes.values.foreach(e => e.visualize(ubigraphClient))
 //    var edges : List[Edge] = Nil
