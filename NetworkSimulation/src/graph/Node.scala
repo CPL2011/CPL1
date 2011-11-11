@@ -3,8 +3,11 @@ import org.ubiety.ubigraph.UbigraphClient
 import scala.util.Random
 import scala.collection.mutable.HashMap
 import examples.fluspreading.Event
+import examples.fluspreading.TurnClient
+import examples.fluspreading.EventClient
+import examples.fluspreading.RoundClient
 
-class Node(val label: Int) {
+class Node(val label: Int) extends TurnClient with RoundClient with EventClient {
   def this(n:scala.xml.Node) = this((n\"@label").text.toInt)
   var originatingEdges = new HashMap[(Int, Int), Edge]()
   var arrivingEdges = new HashMap[(Int, Int), Edge]()
@@ -37,6 +40,7 @@ class Node(val label: Int) {
   
   def doTurn(timestamp:Int, duration:Int){}
   def doRound(timestamp:Int, duration:Int){}
+  def nextRound {}
   def notify(event:Event){}
   
   def visualize(ubigraphClient : UbigraphClient) = {
