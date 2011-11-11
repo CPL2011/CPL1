@@ -7,22 +7,39 @@ import simulation.stat.Statistics
 class testGraph extends XMLGraph with Statistics
 object Test extends Application {
 
+  
   var visGraph = new VisualisableGraph
-  visGraph.addNode(1)
-  visGraph.addNode(2)
-  visGraph.addNode(3)
-  visGraph.addNode(4)
-  visGraph.addEdge(1,2)
-  visGraph.addEdge(1,3)
-  visGraph.addEdge(1,4)
-  visGraph.visualize((x: Node) => ())
-  Thread.sleep(10000)
-  visGraph.visualize(turnNodesRed)
-  def turnNodesRed(node : Node) = {
-    visGraph.ubigraphClient.setVertexAttribute(node.label,"color","#ff0000")
+  var a = 1
+  while(a<=20) {
+    visGraph.addNode(a)
+    a+=1
   }
-  Thread.sleep(10000)
-  visGraph.removeVisualization
+  a = 1
+  while(a<=10) {
+    visGraph.addEdge(a,15-a)
+    a+=1
+  }
+  var b=14
+  while(b>7) {
+    visGraph.addEdge(b,b-1)
+    b-=1
+  }
+  visGraph.addEdge(17,19)
+  visGraph.addEdge(16,18)
+  visGraph.traverse(DepthFirstTraversal, e => print(e.label + " "))
+  println
+ 
+//  
+//  visGraph.visualize((x: Node) => ())
+//  Thread.sleep(10000)
+//  visGraph.removeEdge(1,2)
+//  visGraph.removeNode(1)
+//  visGraph.visualize(turnNodesRed)
+//  def turnNodesRed(node : Node) = {
+//    visGraph.ubigraphClient.setVertexAttribute(node.label,"color","#ff0000")
+//  }
+//  Thread.sleep(10000)
+//  visGraph.removeVisualization
 
 //  
 //  
@@ -69,6 +86,7 @@ object Test extends Application {
   
   //print the object ids of the reachable nodes of each node it visits (in order)
   graph.traverse(BreadthFirstTraversal, e => println(e.originatingEdges.toString), 1) 
+ 
   //check if two nodes are connected
   var connected = false
   graph.traverse(BreadthFirstTraversal, node => if (node.label == 9) connected = true, 2) 

@@ -63,7 +63,17 @@ import scala.collection.mutable.ListBuffer
   def traverse(traverser: Traversal, f: Node => Unit) = {
     var visitedNodes = new ListBuffer[Node]()
     while(nodes.values.toList.diff(visitedNodes).size != 0) {
-      traverser.traverse(node => {f(node); visitedNodes += node}, nodes.values.toList.diff(visitedNodes).first)
+      var nextNodeToVisit = nodes.values.toList.diff(visitedNodes).first
+      var comparisonNode = nextNodeToVisit
+      var looping = false
+      // the code used to prevent looping makes it essentially so
+      // that the root chosen is not necessarily the one a human would pick.
+      // perhaps replace it with a more powerful algorithm later
+      while (!nextNodeToVisit.arrivingEdges.isEmpty && !looping) {
+        nextNodeToVisit = nextNodeToVisit.arrivingEdges.head._2.source
+        if (comparisonNode.label == nextNodeToVisit.label) looping = true
+      }
+      traverser.traverse({node => if (!visitedNodes.contains(node)) {f(node); visitedNodes += node}}, nextNodeToVisit)
     }
   }
   

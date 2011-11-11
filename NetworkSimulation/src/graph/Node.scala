@@ -1,5 +1,4 @@
 package graph
-import org.ubiety.ubigraph.UbigraphClient
 import scala.util.Random
 import scala.collection.mutable.HashMap
 import examples.fluspreading.Event

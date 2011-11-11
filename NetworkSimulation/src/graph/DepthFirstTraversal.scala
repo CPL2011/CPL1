@@ -7,7 +7,7 @@ object DepthFirstTraversal extends Traversal {
     def dft(f: Node => Unit, node: Node) : Unit = {
       f(node)
       visited = node :: visited
-      node.originatingEdges.values.toList.reverse.foreach(e => if (!visited.contains(e)) dft(f, e.destination))
+      node.getChildren.foreach(node => if (!visited.contains(node)) dft(f, node))
     }
     dft(f, node)
   }
