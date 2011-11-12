@@ -10,7 +10,11 @@ class Node(val label: Int) extends TurnClient with RoundClient with EventClient 
   def this(n:scala.xml.Node) = this((n\"@label").text.toInt)
   var originatingEdges = new HashMap[(Int, Int), Edge]()
   var arrivingEdges = new HashMap[(Int, Int), Edge]()
- 
+  
+  def getEdgeTo(destination : Int) : Option[Edge] = originatingEdges.get(label, destination)
+  
+  def getEdgeFrom(source : Int) : Option[Edge] = arrivingEdges.get(source, label)
+  
   def getParents : List[Node] = {
     var parents : List[Node] = Nil
     arrivingEdges.values.foreach(e => parents ::= e.source)

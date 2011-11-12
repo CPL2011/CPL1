@@ -29,17 +29,38 @@ object Test extends Application {
   visGraph.traverse(DepthFirstTraversal, e => print(e.label + " "))
   println
  
-//  
-//  visGraph.visualize((x: Node) => ())
-//  Thread.sleep(10000)
-//  visGraph.removeEdge(1,2)
-//  visGraph.removeNode(1)
-//  visGraph.visualize(turnNodesRed)
-//  def turnNodesRed(node : Node) = {
-//    visGraph.ubigraphClient.setVertexAttribute(node.label,"color","#ff0000")
-//  }
-//  Thread.sleep(10000)
-//  visGraph.removeVisualization
+  
+  visGraph.visualize((x: Node) => ())
+  Thread.sleep(3000)
+  visGraph.removeNode(1)
+  visGraph.visualize((x: Node) => ())
+  Thread.sleep(3000)
+  visGraph.removeEdge(8,7)
+  visGraph.removeEdge(16,18)
+  visGraph.removeEdge(5,10)
+  visGraph.removeEdge(9,8)
+  visGraph.removeEdge(12,11)
+  visGraph.visualize((x: Node) => ())
+  Thread.sleep(3000)
+  visGraph.addNode(5000)
+  visGraph.addNode(5001)
+  visGraph.addNode(5002)
+  visGraph.addNode(5003)
+  visGraph.addNode(5004)
+  visGraph.addNode(5005)
+  visGraph.addEdge(5000,5001)
+  visGraph.addEdge(5001,5002)
+  visGraph.addEdge(5002,5003)
+  visGraph.addEdge(5003,5004)
+  visGraph.addEdge(5004,5005)
+  visGraph.visualize((x: Node) => ())
+  Thread.sleep(3000)
+  visGraph.addNode(111111) // I thought it was more logical if a newly created node also immediately got 
+  //updated. as such this node will turn red on the subsequent def call. If someone disagrees, 
+  //you can easily change it by deleting 'updateNode(e)' in visualisableGraph def visualizeNodes
+  visGraph.visualize(node => visGraph.ubigraphClient.setVertexAttribute(node.label,"color","#ff0000"))
+  Thread.sleep(10000)
+  visGraph.removeVisualization
 
 //  
 //  
