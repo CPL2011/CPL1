@@ -77,6 +77,10 @@ import scala.collection.mutable.ListBuffer
     }
   }
   
+  def traverse(traverser: Traversal) : Unit = traverse(traverser, (node: Node) => ())
+  
+  def traverse(traverser: Traversal, nodeInt: Int) : Unit = traverse(traverser, (node: Node) => (), nodeInt) 
+  
   
 //  def visualize = {
 //    nodes.values.foreach(e => e.visualize(ubigraphClient))

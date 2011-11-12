@@ -9,10 +9,31 @@ class VisualisableGraph extends Graph with Visual {
   private var nodesToBeRemoved = new ListBuffer[Node]
   private var edgesToBeRemoved = new ListBuffer[Edge]
   
+  def visualize(traverser: Traversal, nodeID: Int, updateNode: Node => Unit) : Unit = {
+    visualizeNodes(traverser, nodeID, updateNode)
+    visualizeEdges
+  }
+  
   def visualize(updateNode : Node => Unit) : Unit = { 
     visualizeNodes(updateNode)
     visualizeEdges
   }
+  
+  def visualize : Unit = {
+    visualizeNodes((node: Node) => ())	
+    visualizeEdges
+  }
+  
+  private def visualizeNodes(traverser: Traversal, nodeID: Int, updateNode : Node => Unit) = {
+    unvisualizeNodesToBeRemoved
+    traverse(traverser, (e: Node) => if (visualizedNodes.contains(e)) updateNode(e) else {
+      if (ubigraphClient.newVertex(e.label) == 0) {
+        visualizedNodes += e
+        updateNode(e)
+      } else System.err.println("Error: Node " + e.label + " has already been visualized. The internal logic should prevent this from occurring")
+    }, nodeID) 
+  }
+  
   private def visualizeNodes(updateNode : Node => Unit) = {
     unvisualizeNodesToBeRemoved
     nodes.values.foreach(e => if (visualizedNodes.contains(e)) updateNode(e) else {
