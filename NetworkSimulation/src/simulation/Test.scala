@@ -8,7 +8,9 @@ class testGraph extends XMLGraph with Statistics
 object Test extends Application {
 
   
-  var visGraph = new VisualisableGraph
+  //var visGraph = new VisualisableGraph
+  //or
+  var visGraph = new Graph with Visualisable
   var a = 1
   while(a<=20) {
     visGraph.addNode(a)

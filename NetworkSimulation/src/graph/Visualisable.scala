@@ -1,13 +1,17 @@
 package graph
 
 import scala.collection.mutable.ListBuffer
+import org.ubiety.ubigraph.UbigraphClient
 
 /**
- * VisualisableGraph extends the Graph class with definitions to allow visualization of it to be made.
+ * Visualisable extends the Graph class with definitions to allow visualization of it to be made.
  * The visualizations rely on an active on an active Ubigraph server.
  */
 //class VisualisableGraph extends Graph with Visual {
-  class VisualisableGraph extends Graph with Visual {
+  trait Visualisable extends Graph {
+  
+  /** variable used to store the UbiGraph client*/
+   var ubigraphClient = new UbigraphClient
   /** variable used to store the nodes that are present in the visualization*/
   private var visualizedNodes = new ListBuffer[Node]
   /** variable used to store the edges that are present in the visualization*/
