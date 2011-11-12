@@ -1,6 +1,3 @@
-package simulation
-
-
 import graph._
 import scala.collection.mutable.ListBuffer
 import simulation.stat.Statistics
@@ -8,7 +5,9 @@ class testGraph extends XMLGraph with Statistics
 object Test extends Application {
 
   
-  var visGraph = new VisualisableGraph
+  //var visGraph = new VisualisableGraph
+  //or
+  var visGraph = new Graph with Visualisable
   var a = 1
   while(a<=20) {
     visGraph.addNode(a)
@@ -77,16 +76,16 @@ object Test extends Application {
   visGraph.addEdge(5004,5005)
   visGraph.visualize((x: Node) => ())
   Thread.sleep(3000)
-  visGraph.addNode(111111) // I thought it was more logical if a newly created node also immediately got 
-  //updated. as such this node will turn red on the subsequent def call. If someone disagrees, 
+  visGraph.addNode(111111) // I thought it was more logical if a newly created node also immediately got
+  //updated. as such this node will turn red on the subsequent def call. If someone disagrees,
   //you can easily change it by deleting 'updateNode(e)' in visualisableGraph def visualizeNodes
   visGraph.visualize(node => visGraph.ubigraphClient.setVertexAttribute(node.label,"color","#ff0000"))
   Thread.sleep(10000)
   visGraph.removeVisualization
 
-//  
-//  
-//  
+//
+//
+//
   //var test = new TestDescription(true, "http://192.168.56.101:20738/RPC2")
   //var test = new TestDescription(true,"http://192.168.253.128:20738/RPC2")
   var test = new TestDescription(false,"")
@@ -104,7 +103,7 @@ object Test extends Application {
   graph.addEdge(1, 2)
   graph.addEdge(1, 3)
   graph.addEdge(2, 4)
-  graph.addEdge(2, 5)  
+  graph.addEdge(2, 5)
   graph.addEdge(3, 6)
   graph.gatherStat(graph)
   graph.addEdge(3, 7)
@@ -128,14 +127,14 @@ object Test extends Application {
   graph.writeStatisticsToFile("test.txt")
   
   //print the object ids of the reachable nodes of each node it visits (in order)
-  graph.traverse(BreadthFirstTraversal, e => println(e.originatingEdges.toString), 1) 
+  graph.traverse(BreadthFirstTraversal, e => println(e.originatingEdges.toString), 1)
  
   //check if two nodes are connected
   var connected = false
-  graph.traverse(BreadthFirstTraversal, node => if (node.label == 9) connected = true, 2) 
-  if (connected) System.out.println("connected") else System.out.println("unconnected") 
+  graph.traverse(BreadthFirstTraversal, node => if (node.label == 9) connected = true, 2)
+  if (connected) System.out.println("connected") else System.out.println("unconnected")
 
-  //retrieve an ordered list of the visited nodes 
+  //retrieve an ordered list of the visited nodes
   var nodeListBuffer = new ListBuffer[Node]()
   graph.traverse(BreadthFirstTraversal, node => nodeListBuffer += node, 1)
   System.out.println("The ListBuffer contains an ordered list of size " + nodeListBuffer.size)
@@ -144,50 +143,50 @@ object Test extends Application {
   //graph.removeEdge(1, 2)
   //graph.removeEdge(1, 3)
   //graph.removeEdge(1, 21)
-//  graph.removeEdge(1, 20)
-//  graph.removeEdge(1, 19)
-//  graph.removeNode(1)
+// graph.removeEdge(1, 20)
+// graph.removeEdge(1, 19)
+// graph.removeNode(1)
 
-//  graph.visualize
-//  Thread.sleep(5000)
-//  graph.removeVisualization
+// graph.visualize
+// Thread.sleep(5000)
+// graph.removeVisualization
   
-//  
-//  System.out.println("---------------------------")
-//  
-//  
-//  
-////  println("testing db4o...")
-////  graph.storeGraph()
-////  println("graph stored")
-////  graph.closeDb()
-//  
-////  println("retrieving graph from file")
-////  val g = PersistenceGraph.getGraphFromDb("test.db")
-////  val l = g.queryDb((n:Node)=>true)
-////  val l2 = for(n:Node<-l) yield n.getLabel
-////  println("original nodes' values")
-////  println(graph.getNodes().keySet)
-////  println("stored nodes' values")
-////  println(l2)
-////
-////  g.closeDb()
-////  g.deleteDb("test.db")
 //
-//  
-//  
-////  graph.saveGraph("test.xml")
-////  val g:XMLGraph = new XMLGraph()
+// System.out.println("---------------------------")
+//
+//
+//
+//// println("testing db4o...")
+//// graph.storeGraph()
+//// println("graph stored")
+//// graph.closeDb()
+//
+//// println("retrieving graph from file")
+//// val g = PersistenceGraph.getGraphFromDb("test.db")
+//// val l = g.queryDb((n:Node)=>true)
+//// val l2 = for(n:Node<-l) yield n.getLabel
+//// println("original nodes' values")
+//// println(graph.getNodes().keySet)
+//// println("stored nodes' values")
+//// println(l2)
 ////
-////  
-////  g.loadGraph("test.xml")
-////  println("original: ")
-////  println(graph.nodes)
-////  //println(graph.edges)
-////  println("loaded: ")
-////  println(g.nodes)
-////  //println(g.edges)
-//  
+//// g.closeDb()
+//// g.deleteDb("test.db")
+//
+//
+//
+//// graph.saveGraph("test.xml")
+//// val g:XMLGraph = new XMLGraph()
+////
+////
+//// g.loadGraph("test.xml")
+//// println("original: ")
+//// println(graph.nodes)
+//// //println(graph.edges)
+//// println("loaded: ")
+//// println(g.nodes)
+//// //println(g.edges)
+//
 }
 
 class TestDescription(hasServer: Boolean, server: String) {
