@@ -1,3 +1,4 @@
+package simulation
 import graph._
 import scala.collection.mutable.ListBuffer
 import simulation.stat.Statistics
