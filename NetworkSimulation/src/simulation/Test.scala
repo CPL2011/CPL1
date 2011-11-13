@@ -2,7 +2,7 @@ package simulation
 import examples.persistence.XMLGraph
 import scala.collection.mutable.ListBuffer
 import simulation.stat.Statistics
-import graph.Visualisable
+import graph.Visualizable
 import graph.DepthFirstTraversal
 import graph.Node
 import graph.Graph
@@ -13,7 +13,7 @@ object Test extends Application {
   
   //var visGraph = new VisualisableGraph
   //or
-  var visGraph = new XMLGraph("test.xml") with Visualisable with Statistics
+  var visGraph = new XMLGraph("test.xml") with Visualizable with Statistics
   visGraph.addStatistic(visGraph.numberOfNodes,"NoN")
   visGraph.addStatistic(visGraph.averageNeighbores,"AvEdges")
   var a = 1

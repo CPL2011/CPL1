@@ -2,10 +2,10 @@ package examples.fluspreading
 
 import graph.Graph
 import org.ubiety.ubigraph.UbigraphClient
-import graph.VisualisableGraph
+import graph.Visualizable
 import graph.Node
 
-class VisualGraph(ubiClient2:UbigraphClient) extends VisualisableGraph with TurnClient with EventClient with RoundClient {
+class VisualGraph(ubiClient2:UbigraphClient) extends Graph with Visualizable with TurnClient with EventClient with RoundClient {
   val REFRESH_RATE = 2 * SimulationTime.TICKS_PER_MINUTE
   var elapsedTime = REFRESH_RATE + 1
   var refreshRate:Int = REFRESH_RATE
