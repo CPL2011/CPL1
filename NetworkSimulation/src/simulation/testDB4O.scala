@@ -2,9 +2,10 @@ package simulation
 import graph.PersistenceGraph
 import com.db4o.Db4o
 import com.db4o.Db4oEmbedded
+import examples.persistence.Db4oGraph
 
 object TestDB4O extends Application {
-  var graph = new PersistenceGraph("jordidb")
+  var graph = new Db4oGraph("jordidb")
   
   var i = 1
   while(i<=21) {
@@ -32,9 +33,15 @@ object TestDB4O extends Application {
   graph.addEdge(1, 20)
   graph.addEdge(1, 21)
   
-  graph.storeGraph()
+  graph.openDb()
+  graph.save()
   graph.closeDb()
   
-  var graph2 = PersistenceGraph.getGraphFromDb("jordidb");
+  graph.openDb()
+  var graph2 = graph.load();
+  graph.closeDb()
+  println(graph.nodes)
+  println(graph.nodes.size)
   println(graph2.nodes)
+  println(graph2.nodes.size)
 }

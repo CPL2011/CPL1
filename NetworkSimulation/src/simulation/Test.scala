@@ -1,34 +1,45 @@
 package simulation
-import graph._
+import examples.persistence.XMLGraph
 import scala.collection.mutable.ListBuffer
 import simulation.stat.Statistics
-class testGraph extends XMLGraph with Statistics
+import graph.Visualisable
+import graph.DepthFirstTraversal
+import graph.Node
+import graph.Graph
+import graph.BreadthFirstTraversal
+
 object Test extends Application {
 
   
   //var visGraph = new VisualisableGraph
   //or
-  var visGraph = new Graph with Visualisable
+  var visGraph = new XMLGraph("test.xml") with Visualisable with Statistics
+  visGraph.addStatistic(visGraph.numberOfNodes,"NoN")
+  visGraph.addStatistic(visGraph.averageNeighbores,"AvEdges")
   var a = 1
   while(a<=20) {
     visGraph.addNode(a)
+    visGraph.gatherStat()
     a+=1
   }
   a = 1
   while(a<=10) {
     visGraph.addEdge(a,15-a)
+    visGraph.gatherStat()
     a+=1
   }
   var b=14
   while(b>7) {
     visGraph.addEdge(b,b-1)
+    visGraph.gatherStat()
     b-=1
   }
   visGraph.addEdge(17,19)
   visGraph.addEdge(16,18)
+  visGraph.gatherStat()
   visGraph.traverse(DepthFirstTraversal, e => print(e.label + " "))
   println
- 
+  
   
   visGraph.visualize
   Thread.sleep(3000)
@@ -51,6 +62,9 @@ object Test extends Application {
   visGraph.addNode(4999)
   visGraph.addNode(5000)
   visGraph.addNode(5001)
+  
+  visGraph.gatherStat()
+  
   visGraph.addEdge(5000,4993)
   visGraph.addEdge(5000,4994)
   visGraph.addEdge(5000,4995)
@@ -65,12 +79,18 @@ object Test extends Application {
   visGraph.addEdge(4994,4999)
   visGraph.addEdge(5000,5001)
   visGraph.addEdge(4997,4999)
+  
+  visGraph.gatherStat()
+  
   visGraph.visualize(DepthFirstTraversal, 5000, (node: Node) => visGraph.ubigraphClient.setVertexAttribute(node.label,"color","#0000ff"))
   Thread.sleep(2000)
   visGraph.addNode(5002)
   visGraph.addNode(5003)
   visGraph.addNode(5004)
   visGraph.addNode(5005)
+  
+  visGraph.gatherStat()
+  
   visGraph.addEdge(5001,5002)
   visGraph.addEdge(5002,5003)
   visGraph.addEdge(5003,5004)
@@ -83,6 +103,9 @@ object Test extends Application {
   visGraph.visualize(node => visGraph.ubigraphClient.setVertexAttribute(node.label,"color","#ff0000"))
   Thread.sleep(10000)
   visGraph.removeVisualization
+  
+  visGraph.gatherStat()
+  visGraph.writeStatisticsToFile("test.txt")
 
 //
 //
@@ -90,14 +113,12 @@ object Test extends Application {
   //var test = new TestDescription(true, "http://192.168.56.101:20738/RPC2")
   //var test = new TestDescription(true,"http://192.168.253.128:20738/RPC2")
   var test = new TestDescription(false,"")
-  var graph = new testGraph()
-  graph.addStatistic(graph.numberOfNodes,"NoN")
-  graph.addStatistic(graph.averageNeighbores,"AvEdges")
+  var graph = new Graph
+  
 
   var i = 1
   while(i<=21) {
     graph.addNode(i)
-    if(i%5==0)graph.gatherStat(graph)
     i+=1
   }
   
@@ -106,26 +127,24 @@ object Test extends Application {
   graph.addEdge(2, 4)
   graph.addEdge(2, 5)
   graph.addEdge(3, 6)
-  graph.gatherStat(graph)
   graph.addEdge(3, 7)
   graph.addEdge(4, 8)
   graph.addEdge(8, 9)
   graph.addEdge(5, 6)
-  graph.gatherStat(graph)
   graph.addEdge(10, 11)
   graph.addEdge(12, 13)
   graph.addEdge(6, 14)
   graph.addEdge(6, 15)
   graph.addEdge(15, 16)
-  graph.gatherStat(graph)
   graph.addEdge(15, 17)
   graph.addEdge(15, 18)
   graph.addEdge(1, 19)
   graph.addEdge(1, 20)
   graph.addEdge(1, 21)
-  graph.gatherStat(graph)
   
-  graph.writeStatisticsToFile("test.txt")
+  
+
+  
   
   //print the object ids of the reachable nodes of each node it visits (in order)
   graph.traverse(BreadthFirstTraversal, e => println(e.originatingEdges.toString), 1)
@@ -140,6 +159,13 @@ object Test extends Application {
   graph.traverse(BreadthFirstTraversal, node => nodeListBuffer += node, 1)
   System.out.println("The ListBuffer contains an ordered list of size " + nodeListBuffer.size)
 
+  
+  
+  println("testing xml")
+  visGraph.save()
+  val v = visGraph.load()
+  println(v.nodes.size)
+  println(visGraph.nodes.size)
   //graph.traverse(DepthFirstTraversal, e => println(e.originatingEdges.toString), 100) // should trigger an error message
   //graph.removeEdge(1, 2)
   //graph.removeEdge(1, 3)

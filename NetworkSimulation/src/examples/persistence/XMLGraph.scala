@@ -16,7 +16,7 @@ class XMLGraph(p:String) extends Graph with XMLPersistence {
 		for(n <-(((node) \ "Node") \\ "Edge")){ 
 			val s:Int = (n \ "source").text.toInt
 			val d:Int = (n \ "destination").text.toInt
-			println(s)
+			
 			addEdge(s,d)
 		}
 

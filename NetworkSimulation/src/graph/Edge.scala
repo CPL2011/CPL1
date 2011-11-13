@@ -22,8 +22,6 @@ class Edge(val source: Node, val destination: Node) {
 //    val x = w-y
 //    (x,y)
 //  }
-  def toXML() = <Edge>
-        <source>{source.label.toString()}</source>
-        <destination>{destination.label.toString()}</destination>
-      </Edge>
+
+
 }

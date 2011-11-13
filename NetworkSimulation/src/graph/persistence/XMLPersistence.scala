@@ -3,7 +3,7 @@ import graph.Graph
 import scala.collection.immutable.HashMap
 import graph.Node
 import java.io.File
-import graph.XML
+
 
 trait XMLPersistence extends Graph with Persistence with XML{
 
