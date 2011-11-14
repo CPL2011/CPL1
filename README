@@ -27,6 +27,9 @@ Graph has no list of Edges...
 But he needs them in the visualize method,
 so we hack the liberary to get a list of edges.
 What was the reason that Graph Shouldn't have a list of Edges?
+----------> At some point I got the request that nodes should maintain a list of their edges, 
+----------> and that the graph should thus no longer maintain such a list. Which is why the current version 
+----------> does not have such a list
 
 XML: 
 - loading and storing...db4o? GraphML GEXP? get feedback
@@ -44,7 +47,8 @@ _____________
 Graph.visualize(UpdateVisualization) -> I find this kind of weard...
 where to visualize? How should I use this function..? 
 What if I want to change the initial visualization??
-
+-----------> Check out simulation/Test.scala to get an idea of how the function should be used
+-----------> extra: I just recently noticed the README got changed. Will look into it soon. Pretty late now, gotta go sleep.
 Suggestion::::
 Perhaps provide dummy methods that the user can override. The methods will have basic functionality so by using super this functionality can be extended by the user. Method calls will be automaticaly by the framework and a parameter ubigraph will be delivered.
 
