@@ -11,6 +11,25 @@ import graph.BreadthFirstTraversal
 object Test extends Application {
 
   
+  var edgeGraph = new Graph with Visualizable
+  var s = 0
+  while(s<300) {
+    edgeGraph.addNode(s)
+    s+=1
+  }
+  edgeGraph.addEdges(0.007)
+  edgeGraph.visualize
+  Thread.sleep(10000)
+  var t = 0
+  while(t<10) {
+    edgeGraph.removeEdges(0.004)
+    edgeGraph.removeNodes(0.002*Math.pow(t,2))
+    t+=1
+    edgeGraph.visualize
+    Thread.sleep(1000/(t/2+1))
+  }
+  edgeGraph.removeVisualization
+  
   //var visGraph = new VisualisableGraph
   //or
   var visGraph = new XMLGraph("test.xml") with Visualizable with Statistics
