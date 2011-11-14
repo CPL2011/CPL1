@@ -163,7 +163,10 @@ object Test extends Application {
   
   println("testing xml")
   visGraph.save()
-  val v = visGraph.load()
+  val v:Graph = visGraph.load() match{		//for this example a 'cast' to graph is sufficient
+    case Some(t:Graph)=>t
+    case None=>null
+  }
   println(v.nodes.size)
   println(visGraph.nodes.size)
   //graph.traverse(DepthFirstTraversal, e => println(e.originatingEdges.toString), 100) // should trigger an error message

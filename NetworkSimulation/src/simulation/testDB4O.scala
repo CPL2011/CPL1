@@ -2,6 +2,7 @@ package simulation
 import com.db4o.Db4o
 import com.db4o.Db4oEmbedded
 import examples.persistence.Db4oGraph
+import graph.persistence.Db4oPersistence
 
 object TestDB4O extends Application {
   var graph = new Db4oGraph("jordidb")
@@ -33,12 +34,17 @@ object TestDB4O extends Application {
   graph.addEdge(1, 21)
   
   graph.openDb()
+  
   graph.save()
   graph.closeDb()
   
-  graph.openDb()
-  var graph2 = graph.load();
-  graph.closeDb()
+  
+  var graph2:Db4oGraph = Db4oPersistence.load("jordidb") match{
+    case Some(e:Db4oGraph)=>e
+    case _=>{println("no db4ograph");
+    		null}
+  }
+  
   println(graph.nodes)
   println(graph.nodes.size)
   println(graph2.nodes)

@@ -6,14 +6,12 @@ import java.io.File
 
 
 trait XMLPersistence extends Graph with Persistence with XML{
-
  
-  
   def loadFile()=scala.xml.XML.loadFile(path)
   /**
    * abstract methods
    */
-  override def load():XMLPersistence
+  override def load():Option[XMLPersistence]
   override def toXML():scala.xml.Node
   
   def save() {
@@ -30,3 +28,4 @@ trait XMLPersistence extends Graph with Persistence with XML{
     }
   }
 }
+
