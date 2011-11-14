@@ -40,16 +40,51 @@ class Graph(nodeMap : HashMap[Int, Node]) {
       }
     }
   }
+  
   /**
+   * DEPRECATED
    * Currently this method only adds edges IN ONE DIRECTION
    * @param: The probability that an edge is formed  between each two node pairs
    */
-  def addEdges(probability: Double) = {
+/**  def adEdges(probability: Double) = {
     var destinations = nodes.values.toList.tail
     nodes.values.foreach(source => {
       if (!destinations.isEmpty) {
         destinations.foreach(destination =>  
           if (Math.random < probability) source.addNeighbour(destination)
+        )
+        destinations = destinations.tail 
+      }
+    })
+  }*/
+  
+  /**
+   * Adds unidirectional edges between nodes in the graph that are not yet connected,
+   * with a given probability.
+   */
+  def addUnidirectionalEdges(probability: Double) = {
+    val destinations = nodes.values.toList
+    nodes.values.foreach(source =>
+      destinations.foreach(destination =>
+        if(source != destination && !source.getNeighbours.contains(destination) && Math.random < probability)
+          source.addNeighbour(destination)
+      )
+    )
+  }
+  
+  /**
+   * Adds bidirectional edges between nodes in the graph that are not yet connected,
+   * with a given probability.
+   */
+  def addBidirectionalEdges(probability: Double) = {
+    var destinations = nodes.values.toList.tail
+    nodes.values.foreach(source => {
+      if (!destinations.isEmpty) {
+        destinations.foreach(destination =>  
+          if (!source.getNeighbours.contains(destination) && Math.random < probability) {
+            source.addNeighbour(destination)
+            destination.addNeighbour(source)
+          }
         )
         destinations = destinations.tail 
       }

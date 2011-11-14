@@ -12,23 +12,28 @@ object Test extends Application {
 
   
   var edgeGraph = new Graph with Visualizable
+//  edgeGraph.setRemoteUbigraphServerHost("http://192.168.56.101:20738/RPC2")
   var s = 0
-  while(s<300) {
+  while(s<100) {
     edgeGraph.addNode(s)
     s+=1
   }
-  edgeGraph.addEdges(0.007)
+  edgeGraph.addBidirectionalEdges(0.001)
+  Thread.sleep(5000)
+  edgeGraph.addUnidirectionalEdges(0.01)
   edgeGraph.visualize
-  Thread.sleep(10000)
+  Thread.sleep(5000)
   var t = 0
   while(t<10) {
     edgeGraph.removeEdges(0.004)
     edgeGraph.removeNodes(0.002*Math.pow(t,2))
     t+=1
     edgeGraph.visualize
-    Thread.sleep(1000/(t/2+1))
+    Thread.sleep(1000)
   }
+  Thread.sleep(5000)
   edgeGraph.removeVisualization
+  /**
 //  class LolNode(label : Int, value: Int) extends Node(label) {
 //    var storedValue = value
 //  }
@@ -270,6 +275,8 @@ object Test extends Application {
 //// println(g.nodes)
 //// //println(g.edges)
 //
+ * 
+ */
 }
 
 class TestDescription(hasServer: Boolean, server: String) {
