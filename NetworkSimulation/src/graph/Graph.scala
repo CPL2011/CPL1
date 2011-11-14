@@ -3,9 +3,10 @@ package graph
 import scala.collection.immutable.HashMap
 import scala.collection.mutable.ListBuffer
 
+class Graph(nodeMap : HashMap[Int, Node]) {
+  def this() = this(new HashMap[Int, Node])
 
-  class Graph {
-  var nodes = new HashMap[Int, Node]()
+  var nodes = nodeMap
   
   def addNode(nodeID: Int) =  
     if(!nodes.contains(nodeID)) nodes += ((nodeID, new Node(nodeID)))
@@ -22,10 +23,13 @@ import scala.collection.mutable.ListBuffer
       case None => {
 	System.err.println("The specified node cannot be removed since it is no member of this graph")
       }
-
-
     }
    
+  def removeNodes(probability: Double) =
+    nodes.values.foreach(node =>
+      if(Math.random < probability) removeNode(node.label)
+    )
+    
   def addEdge(source: Int, destination: Int) = {
     (nodes.get(source), nodes.get(destination)) match {
       case (Some(sourceNode), Some(destinationNode)) => {
@@ -35,6 +39,21 @@ import scala.collection.mutable.ListBuffer
 	    System.err.println("Both the source and destination id have to specify existing nodes in the graph. This is not the case")
       }
     }
+  }
+  /**
+   * Currently this method only adds edges IN ONE DIRECTION
+   * @param: The probability that an edge is formed  between each two node pairs
+   */
+  def addEdges(probability: Double) = {
+    var destinations = nodes.values.toList.tail
+    nodes.values.foreach(source => {
+      if (!destinations.isEmpty) {
+        destinations.foreach(destination =>  
+          if (Math.random < probability) source.addNeighbour(destination)
+        )
+        destinations = destinations.tail 
+      }
+    })
   }
 
   def removeEdge(source: Int, destination: Int) = {
@@ -46,6 +65,14 @@ import scala.collection.mutable.ListBuffer
 	    System.err.println("The specified edge cannot be removed since it is no member of this graph")
       }
     }
+  }
+  
+  def removeEdges(probability: Double) = {
+	var edges = new ListBuffer[Edge]
+	traverse(DepthFirstTraversal, (node) => edges ++= node.originatingEdges.values)
+    edges.foreach(edge =>
+        if (Math.random < probability) removeEdge(edge.source.label, edge.destination.label)
+    )
   }
   
   def traverse(traverser: Traversal, f: Node => Unit, nodeID: Int) = {
@@ -79,22 +106,7 @@ import scala.collection.mutable.ListBuffer
   
   def traverse(traverser: Traversal) : Unit = traverse(traverser, (node: Node) => ())
   
-  def traverse(traverser: Traversal, nodeInt: Int) : Unit = traverse(traverser, (node: Node) => (), nodeInt) 
-  
-  
-//  def visualize = {
-//    nodes.values.foreach(e => e.visualize(ubigraphClient))
-//    var edges : List[Edge] = Nil
-//    nodes.values.foreach(e => edges = edges ++ e.originatingEdges.values.toList)
-//    edges.foreach(e => e.visualize(ubigraphClient))
-//  }
-  
-//  def removeVisualization = {
-//    nodes.values.foreach(e => e.removeVisualization(ubigraphClient))
-//    //var edges : List[Edge] = Nil
-//    //nodes.values.foreach(e => edges = edges ++ e.originatingEdges.values.toList)
-//    //edges.foreach(e => e.removeVisualization(ubigraphClient))
-//  }  
+  def traverse(traverser: Traversal, nodeInt: Int) : Unit = traverse(traverser, (node: Node) => (), nodeInt)
 }
 
 
