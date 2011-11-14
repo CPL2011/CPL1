@@ -24,7 +24,12 @@ class XMLGraph(p:String) extends Graph with XMLPersistence {
 	/**
 	 * To load an XMLGraph, first set the correct path and then invoke this mehtod
 	 */
-	override def load():XMLGraph = new XMLGraph(loadFile(),path)
+	override def load():Option[XMLGraph] = try{
+	  Some(new XMLGraph(loadFile(),path))
+	  
+	}catch{
+	  case e:Exception=>None
+	}
 	
 	override def toXML():scala.xml.Node = {
 <Graph>

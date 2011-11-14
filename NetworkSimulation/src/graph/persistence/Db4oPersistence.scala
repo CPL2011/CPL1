@@ -119,15 +119,41 @@ def queryDb[T](predicate: T => Boolean):List[T] = db query predicate
 //	db.store(e)
 //}
 override def save(){
-	db.store(this)
-}
-override def load():Db4oPersistence = queryDb((g:Db4oPersistence)=>(g.path==path)).last
-
-   
-
-
+  closeDb()
+  deleteDb()			//we need to clear the database to ensure that only one 'root' object will be stored
+  openDb()			
+  db.store(this)
 }
 
+/**
+ * Loads the Db4oPersistence object stored in the db file located at the 'path'
+ * This method will return a 
+ */
+override def load():Option[Db4oPersistence] = 
+  queryDb((g:Db4oPersistence)=>(g.path==path))  match{
+      case t:List[Db4oPersistence] => {
+        if(t.size==1) Some(t.first)
+        else None
+      }
+      case _ => None
+    }
+}
+/**
+ * This companion object provides a 'static' method for the Db4oPersistence trait which will load an 
+ * object from the database located at the path
+ * The returned object has the same path variable as the argument(Only 1 Db4oPersistence object should be in
+ * the db at all times????)
+ */
+object Db4oPersistence extends Db4oPersistence{
+  override var path:String = null 		//to keep compiler happy-_-
+  def load(p:String):Option[Db4oPersistence] = {
+    setPath(p)
+    openDb()
+    val ret = load()
+    closeDb()
+    return ret
+  }
+}
 /**
  * extend DB4O's ObjectSet with scala's Iterator
  */
@@ -135,3 +161,5 @@ class RichObjectSet[T](objectSet:ObjectSet[T]) extends Iterator[T] {
 	def hasNext:Boolean =  objectSet.hasNext()
 			def next:T = objectSet.next()
 }
+
+
