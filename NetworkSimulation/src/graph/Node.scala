@@ -7,7 +7,7 @@ import examples.fluspreading.EventClient
 import examples.fluspreading.RoundClient
 
 class Node(val label: Int) extends TurnClient with RoundClient with EventClient {
-  def this(n:scala.xml.Node) = this((n\"@label").text.toInt)
+  
   var originatingEdges = new HashMap[(Int, Int), Edge]()
   var arrivingEdges = new HashMap[(Int, Int), Edge]()
   

@@ -1,5 +1,4 @@
 package simulation
-import graph.PersistenceGraph
 import com.db4o.Db4o
 import com.db4o.Db4oEmbedded
 import examples.persistence.Db4oGraph

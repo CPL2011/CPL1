@@ -1,5 +1,5 @@
 package examples.fluspreading
-import graph.PersistenceGraph
+
 import simulation.TestDescription
 import graph.BreadthFirstTraversal
 import graph.Node
