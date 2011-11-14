@@ -1,3 +1,4 @@
+
 TODO's
 ____________
 
@@ -42,13 +43,27 @@ http://ubietylab.net/ubigraph/content/Docs/index.html#languagebindings (Java)
 BUGS
 _____________
 * There is no way I can define myEdge extends Edge and add use this edge to connect two Nodes with each other.
+-----------> Correct, I've been thinking about a way of doing this (and all other extension-related things) I've 
+-----------> considered generics (though it seems to work it's not very elegant, seeing how graphs only store nodes
+-----------> and nodes actually store edges), setters and overridden methods but none of those methods seem very clean.
+-----------> Open to suggestions.
+-----------> All remaining problems seem to originate from this. I think generics is the way to go, altough
+-----------> I'm not quite certain about what methods to drop and keep (for example edges should then no longer be
+-----------> created inside the graph-related classes,...) Either way, if you have a good idea feel free to just 
+-----------> go and implement it.
+
 * With the new version of the graph I still need to overide the graph as I need the ubigraphClient variable to for the update function to work...
+-----------> In the current version you can call setRemoteUbigraphServerHost(string: n) on a class extending trait Visualisable
+-----------> in order to connect the client to a server with the given location as string. I don't seem able to run it, 
+-----------> I probably just can't, so I'd like to hear from you if it works as expected.
 
 Graph.visualize(UpdateVisualization) -> I find this kind of weard...
 where to visualize? How should I use this function..? 
 What if I want to change the initial visualization??
 -----------> Check out simulation/Test.scala to get an idea of how the function should be used
------------> extra: I just recently noticed the README got changed. Will look into it soon. Pretty late now, gotta go sleep.
+-----------> If the current method has limitations feelf free to list them. And I'll see what I can do
+
+
 Suggestion::::
 Perhaps provide dummy methods that the user can override. The methods will have basic functionality so by using super this functionality can be extended by the user. Method calls will be automaticaly by the framework and a parameter ubigraph will be delivered.
 
@@ -58,7 +73,11 @@ Pseudocode framework
 	//Perhaps to some automatic updateing to the node.
 	//Ex: If Node.color is added to library updates of colors can 	  be done here
 }
-
+------------> Shouldn't this behaviour be already present? 'initvisualization' essentially just provides you with a 
+------------> visualization of the - at that moment - current state of the graph, which is what the visualize() method
+------------> currently does. The ubigraphClient can be retrieved by calling .ubigraphClient on the graph extending the 
+------------> Visualizable trait (don't forget to set the remote server if necessary) and then any functionality
+------------> you might place in an 'overridden function' can just be given as a parameter (= higher order function)
 
 Pseudocode myNode extends Node
 override def myNode.initVisualization(ubi){
@@ -71,9 +90,16 @@ override def myNode.visualize(ubi){
 	super.visualize(ubi)
 	//Add some custom visualization
 }
+------------> this pseudocode doesn't really make sence, you're trying to override a visualization-related method
+------------> in something that just extends Node. I thought we opted to completely seperate visualization
+------------> aspects from the underlying graph
+//----------> Ah I think I understand, it's the problem with accessing the vars of your extended Node thing?
+//----------> this could also be solved by relying on generics? Either way, I'm not really certain I understand 
+//----------> the reasoning entirely...feel free to make changes where appropriate.
 
 
 - I need to update ubigraphClient for my server to work all right. So if you make ubigraphclient a val I can't visualize. Perhaps make two constructors of VisualizableGraph. One with the serverString and one Witout...
+------------> Should no longer be an issue
 
 IN PROGRESS
 _____________
