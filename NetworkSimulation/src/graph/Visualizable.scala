@@ -10,7 +10,7 @@ import org.ubiety.ubigraph.UbigraphClient
 trait Visualizable extends Graph {
   
   /** variable used to store the UbiGraph client*/
-   var ubigraphClient = new UbigraphClient
+  var ubigraphClient = new UbigraphClient
   /** variable used to store the nodes that are present in the visualization*/
   private var visualizedNodes = new ListBuffer[Node]
   /** variable used to store the edges that are present in the visualization*/
@@ -27,6 +27,32 @@ trait Visualizable extends Graph {
   private var edgesToBeRemoved = new ListBuffer[Edge] 
   
   /**
+   * Creates a ubigraphClient using the given string as the server location 
+   * @param ubigraphServerHost : the address of the remote host offering 
+   * a Ubigraph server. (http://<Server IP>:<Port>/RPC2)
+   * e.g.: http://192.168.253.134:20738/RPC2
+   */
+  def setRemoteUbigraphServerHost(ubigraphServerHost: String) = 
+    ubigraphClient = new UbigraphClient(ubigraphServerHost)
+  
+  /**
+   * Provides a visualization as specified by the underlying graph.
+   * The given Traversal is used to traverse the connected nodes of the graph starting
+   * from the node with the given nodeID. The function updateNode is applied to each node 
+   * that gets traversed.
+   * updateEdge gets called on each edge in the graph (depending on how people
+   * wish to use this, this could get changed...expecting feedback
+   * @param traverser : specifying the way nodes should be traversed
+   * @param nodeID : the id of the root, the node from which the traversal should start
+   * @param updateNode : a function to be applied to each traversed node 
+   * @param updateEdge : a function to be applied to each edge
+   */
+  def visualize(traverser: Traversal, nodeID: Int, updateNode: Node => Any, updateEdge: Edge => Any) : Unit = {
+    visualizeNodes(traverser, nodeID, updateNode)
+    visualizeEdges(updateEdge)
+  }
+  
+   /**
    * Provides a visualization as specified by the underlying graph.
    * The given Traversal is used to traverse the connected nodes of the graph starting
    * from the node with the given nodeID. The function updateNode is applied to each node 
@@ -35,9 +61,19 @@ trait Visualizable extends Graph {
    * @param nodeID : the id of the root, the node from which the traversal should start
    * @param updateNode : a function to be applied to each traversed node 
    */
-  def visualize(traverser: Traversal, nodeID: Int, updateNode: Node => Unit) : Unit = {
-    visualizeNodes(traverser, nodeID, updateNode)
-    visualizeEdges
+  def visualize(traverser: Traversal, nodeID: Int, updateNode: Node => Any) : Unit = {
+    visualize(traverser, nodeID, updateNode, (edge) => ())
+  }
+  /**
+   * Provides a visualization as specified by the underlying graph.
+   * The given functions are applied to respectively all nodes in the graph 
+   * and all edges in the graph, in a random order
+   * @param updateNode : a function to be applied to each node in the graph
+   * @param updateEdge : a function to be applied to each edge in the graph 
+   */
+  def visualize(updateNode : Node => Any, updateEdge : Edge => Any) : Unit = { 
+    visualizeNodes(updateNode)
+    visualizeEdges(updateEdge)
   }
   
   /**
@@ -45,17 +81,15 @@ trait Visualizable extends Graph {
    * The given function is applied to all nodes in the graph in a random order
    * @param updateNode : a function to be applied to each node in the graph
    */
-  def visualize(updateNode : Node => Unit) : Unit = { 
-    visualizeNodes(updateNode)
-    visualizeEdges
+  def visualize(updateNode : Node => Any) : Unit = { 
+    visualize(updateNode, (edge) => ())
   }
   
   /**
    * Provides a visualization as specified by the underlying graph.
    */
   def visualize : Unit = {
-    visualizeNodes((node: Node) => ())	
-    visualizeEdges
+    visualize((node) => (), (edge => ()))	
   }
   
   /**
@@ -67,7 +101,7 @@ trait Visualizable extends Graph {
    * @param nodeID : the id of the root, the node from which the traversal should start
    * @param updateNode : a function to be applied to each traversed node
    */
-  private def visualizeNodes(traverser: Traversal, nodeID: Int, updateNode : Node => Unit) = {
+  private def visualizeNodes(traverser: Traversal, nodeID: Int, updateNode : Node => Any) = {
     unvisualizeNodesToBeRemoved
     traverse(traverser, (e: Node) => if (visualizedNodes.contains(e)) updateNode(e) else {
       if (ubigraphClient.newVertex(e.label) == 0) {
@@ -82,7 +116,7 @@ trait Visualizable extends Graph {
    * In a random order the given function is applied to each node in the graph
    * @param updateNode : a function to be applied to each node in the graph
    */
-  private def visualizeNodes(updateNode : Node => Unit) = {
+  private def visualizeNodes(updateNode : Node => Any) = {
     unvisualizeNodesToBeRemoved
     nodes.values.foreach(e => if (visualizedNodes.contains(e)) updateNode(e) else {
       if (ubigraphClient.newVertex(e.label) == 0) {
@@ -95,13 +129,14 @@ trait Visualizable extends Graph {
   /**
    * Provides a visualization of the edges as specified by the underlying graph.
    */
-  private def visualizeEdges = {
+  private def visualizeEdges(updateEdge : Edge => Any) = {
     unvisualizeEdgesToBeRemoved
     var edges : List[Edge] = Nil
     nodes.values.foreach(e => edges = edges ++ e.originatingEdges.values.toList)
-    edges.foreach(e => if (visualizedEdges.contains(e)) {/*want to modify? then add f as parameter*/ } else {
+    edges.foreach(e => if (visualizedEdges.contains(e)) updateEdge(e) else {
       if (ubigraphClient.newEdge(cantorPairing(e.source.label, e.destination.label), e.source.label, e.destination.label) == 0) {
         visualizedEdges += e
+        updateEdge(e)
       } else System.err.println("Error: The edge (" + e.source.label + "," + e.destination.label + ") has already been visualized. The internal logic should prevent this from occurring")
     }) 
   }

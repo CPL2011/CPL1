@@ -29,6 +29,40 @@ object Test extends Application {
     Thread.sleep(1000/(t/2+1))
   }
   edgeGraph.removeVisualization
+//  class LolNode(label : Int, value: Int) extends Node(label) {
+//    var storedValue = value
+//  }
+//  
+//  def myUpdateLolNode(ubiClient : UbigraphClient)(lolNode : LolNode) : Unit = {
+//    if (lolNode.getNeighbours.toList.asInstanceOf[List[LolNode]].forall(n => n.storedValue > lolNode.storedValue)) {
+//        ubiClient.setVertexAttribute(lolNode.label,"color","#00ff00")
+//    }
+//  }
+//  
+//  var edgeGraph = new Graph with Visualizable
+//  //edgeGraph.setRemoteUbigraphServerHost("http://192.168.253.134:20738/RPC2")
+//  var s = 0
+//  while(s<300) {
+//    edgeGraph.addNode(new LolNode(s,s*2))
+//    s+=1
+//  }
+//  edgeGraph.addEdges(0.007)
+//  edgeGraph.visualize
+//  Thread.sleep(10000)
+//  var t = 0
+//  while(t<10) {
+//    edgeGraph.removeEdges(0.004)
+//    edgeGraph.removeNodes(0.002*Math.pow(t,2))
+//    t+=1
+//    edgeGraph.visualize(lolnode => lolnode match {
+//      case lolnode : LolNode => myUpdateLolNode(edgeGraph.ubigraphClient)_
+//      case _ : (n) => ()
+//    })
+//    Thread.sleep(1000/(t/2+1))
+//  }
+//  Thread.sleep(5000)
+//  edgeGraph.removeVisualization
+//  
   
   //var visGraph = new VisualisableGraph
   //or
@@ -119,7 +153,7 @@ object Test extends Application {
   visGraph.addNode(111111) // I thought it was more logical if a newly created node also immediately got
   //updated. as such this node will turn red on the subsequent def call. If someone disagrees,
   //you can easily change it by deleting 'updateNode(e)' in visualisableGraph def visualizeNodes
-  visGraph.visualize(node => visGraph.ubigraphClient.setVertexAttribute(node.label,"color","#ff0000"))
+  visGraph.visualize((node : Node) => visGraph.ubigraphClient.setVertexAttribute(node.label,"color","#ff0000"))
   Thread.sleep(10000)
   visGraph.removeVisualization
   
