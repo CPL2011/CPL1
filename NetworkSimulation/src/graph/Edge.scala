@@ -3,6 +3,12 @@ import org.ubiety.ubigraph.UbigraphClient
 
 class Edge(val source: Node, val destination: Node) {
   
+  def informNodes(graph: Graph) = {
+    if (graph.hasNode(source) && graph.hasNode(destination)) { 
+      source.addOriginatingEdge(this)
+      destination.addArrivingEdge(this) 
+    } else System.err.println("An edge between the specified nodes cannot be formed since they don't belong to the graph the edge has been assigned to")
+  }
 //  def visualize(ubigraphClient : UbigraphClient) = {
 //    if (ubigraphClient.newEdge(cantorPairing(source.label, destination.label), source.label, destination.label) == -1) {
 //      System.err.println("The edge (" + source.label + "," + destination.label + ") has already been visualized")

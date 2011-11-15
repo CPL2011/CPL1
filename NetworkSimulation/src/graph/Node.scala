@@ -8,12 +8,12 @@ import engine.RoundClient
 
 class Node(val label: Int) extends TurnClient with RoundClient with EventClient {
   
-  var originatingEdges = new HashMap[(Int, Int), Edge]()
-  var arrivingEdges = new HashMap[(Int, Int), Edge]()
+  var originatingEdges = new HashMap[Int, Edge]()
+  var arrivingEdges = new HashMap[Int, Edge]()
   
-  def getEdgeTo(destination : Int) : Option[Edge] = originatingEdges.get(label, destination)
+  def getEdgeTo(destination : Int) : Option[Edge] = originatingEdges.get(destination)
   
-  def getEdgeFrom(source : Int) : Option[Edge] = arrivingEdges.get(source, label)
+  def getEdgeFrom(source : Int) : Option[Edge] = arrivingEdges.get(source)
   
   def getParents : List[Node] = {
     var parents : List[Node] = Nil
@@ -29,18 +29,29 @@ class Node(val label: Int) extends TurnClient with RoundClient with EventClient 
   
   def getNeighbours : List[Node] = getParents ++ getChildren
 
+  def addOriginatingEdge(edge: Edge) = { 
+    if (!originatingEdges.contains((edge.destination.label))) {
+      originatingEdges += ((edge.destination.label, edge))
+    } else System.err.println("The edge (" + edge.source.label + "," + edge.destination.label + ") has already been added to this graph")
+  }
+  
+  def addArrivingEdge(edge: Edge) = { 
+    if (!arrivingEdges.contains((edge.source.label))) {
+      arrivingEdges += ((edge.source.label, edge))
+    } else System.err.println("The edge (" + edge.source.label + "," + edge.destination.label + ") has already been added to this graph")
+  }
+  
   def addNeighbour(node : Node) = {
     var edge = new Edge(this, node)
-    var newEntry = (((this.label, node.label), edge))
-    originatingEdges += newEntry
-    node.arrivingEdges += newEntry
+    originatingEdges += ((node.label, edge))
+    node.arrivingEdges += ((label, edge))
   }
   
   def removeNeighbour(nodeID: Int) = {
-    originatingEdges.get((label, nodeID)) match {
+    originatingEdges.get(nodeID) match {
       case Some(edge) => {
-        originatingEdges -= ((label, nodeID))
-        edge.destination.arrivingEdges -= ((label, nodeID))
+        originatingEdges -= (nodeID)
+        edge.destination.arrivingEdges -= (label)
       }
       case None => {
        	System.err.println("The specified edge cannot be removed since it is no member of this graph")

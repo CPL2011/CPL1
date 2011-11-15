@@ -8,6 +8,8 @@ class Graph(nodeMap : HashMap[Int, Node]) {
 
   var nodes = nodeMap
   
+  def hasNode(node: Node) = nodes.contains(node.label)
+  
   def addNode(nodeID: Int) =  
     if(!nodes.contains(nodeID)) nodes += ((nodeID, new Node(nodeID)))
   def addNode(node: Node) = 
@@ -30,6 +32,10 @@ class Graph(nodeMap : HashMap[Int, Node]) {
       if(Math.random < probability) removeNode(node.label)
     )
     
+  def addEdge(edge: Edge) = {
+	  edge.informNodes(this)
+  }
+  
   def addEdge(source: Int, destination: Int) = {
     (nodes.get(source), nodes.get(destination)) match {
       case (Some(sourceNode), Some(destinationNode)) => {
@@ -126,14 +132,15 @@ class Graph(nodeMap : HashMap[Int, Node]) {
     var visitedNodes = new ListBuffer[Node]()
     while(nodes.values.toList.diff(visitedNodes).size != 0) {
       var nextNodeToVisit = nodes.values.toList.diff(visitedNodes).first
-      var comparisonNode = nextNodeToVisit
+      var consideredAsRootNodes = new ListBuffer[Node]
+      consideredAsRootNodes += nextNodeToVisit
       var looping = false
       // the code used to prevent looping makes it essentially so
       // that the root chosen is not necessarily the one a human would pick.
       // perhaps replace it with a more powerful algorithm later
       while (!nextNodeToVisit.arrivingEdges.isEmpty && !looping) {
-        nextNodeToVisit = nextNodeToVisit.arrivingEdges.head._2.source
-        if (comparisonNode.label == nextNodeToVisit.label) looping = true
+        if (consideredAsRootNodes.contains(nextNodeToVisit)) looping = true
+        else nextNodeToVisit = nextNodeToVisit.arrivingEdges.head._2.source
       }
       traverser.traverse({node => if (!visitedNodes.contains(node)) {f(node); visitedNodes += node}}, nextNodeToVisit)
     }
