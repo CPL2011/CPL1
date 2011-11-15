@@ -1,10 +1,10 @@
 package graph
 import scala.util.Random
 import scala.collection.mutable.HashMap
-import examples.fluspreading.Event
-import examples.fluspreading.TurnClient
-import examples.fluspreading.EventClient
-import examples.fluspreading.RoundClient
+import engine.Event
+import engine.TurnClient
+import engine.EventClient
+import engine.RoundClient
 
 class Node(val label: Int) extends TurnClient with RoundClient with EventClient {
   

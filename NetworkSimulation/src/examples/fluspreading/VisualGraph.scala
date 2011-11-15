@@ -1,51 +1,33 @@
 package examples.fluspreading
 
 import graph.Graph
-import org.ubiety.ubigraph.UbigraphClient
 import graph.Visualizable
 import graph.Node
+import engine.SimulationTime
 
-class VisualGraph(ubiClient2:UbigraphClient) extends Graph with Visualizable with TurnClient with EventClient with RoundClient {
+class VisualGraph extends Graph with Visualizable {
   val REFRESH_RATE = 2 * SimulationTime.TICKS_PER_MINUTE
   var elapsedTime = REFRESH_RATE + 1
   var refreshRate:Int = REFRESH_RATE
   
   def setRefreshRate(rr:Int) {refreshRate = rr}
-  ubigraphClient = ubiClient2
   
-  private def refreshVisualization(duration:Int){
+  def refreshVisualization(duration:Int){
     if(elapsedTime > REFRESH_RATE) {
-      visualize(refreshVisualization)
+      visualize(updateVisualization)
       elapsedTime = 0
     }
     elapsedTime += duration
   }
   
-  def refreshVisualization(n:Node){
+  def updateVisualization(n:Node){
     n match{
-      case p:Person => p.refreshVisualization(ubigraphClient)
+      case p:Person => p.updateVisualization(ubigraphClient)
       case _ =>
     }
   }
   
-  def doTurn(currentTime:Int, duration:Int) {
-    refreshVisualization(duration)
-  }
-  
-  //Speciaal voor steven :p
-  /*override def doEachTurn(currentTime:Int, duration:Int) {
-    visualize
-  }*/
-  
-  def doRound(timestamp:Int, duration:Int){
-    refreshVisualization(duration)
-  }
-  
-  def nextRound(){
-    //visualize "next round started"??
-  }
-  
-  def notify(event:Event){
-    visualize(refreshVisualization)
+  override def visualize {
+    visualize(updateVisualization)
   }
 }

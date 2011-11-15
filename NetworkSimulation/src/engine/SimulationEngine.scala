@@ -1,4 +1,4 @@
-package examples.fluspreading
+package engine
 import graph.Graph
 
 abstract class SimulationEngine(graph:Graph) {

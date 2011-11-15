@@ -1,4 +1,4 @@
-package examples.fluspreading
+package engine
 
 import graph.Graph
 import graph.Node
@@ -52,33 +52,40 @@ class EventBasedEngine(graph:Graph) extends SimulationEngine(graph) {
 abstract class Event extends Ordered[Event] {
   protected var timestamp:Int = -1
   var name:String
+  //Specify the delay between creating and receiving this Event
+  var delay:Int = 100
   private var engine:EventBasedEngine = null
-  
   private var ordening:Int = -1
   
   def compare(e:Event) = e.ordening - ordening
   
+  //EventClients normaly have no direct access to the engine so they cannot easily abuse this method
+  //as this method is meant to be used only by the EventClient trait.
   def setTimestamp(engine:EventBasedEngine){
       if(timestamp < 0)
-    	timestamp = engine.getCurrentTime + 10
+    	timestamp = engine.getCurrentTime + delay
     else
     	throw new Exception("Timestamp modified???")
   }
   
   def prepareOrdening {
     if(ordening < 0)
+      if(timestamp < 0)
+        throw new Exception("TimeStamp not set. Cannot prepare Ordening. \nIf you use the EventClient.createEvent method the Event will be ordened.")
+      else
     	ordening = timestamp*100 + Random.nextInt(100)
     else
-    	throw new Exception("Event is already send to the engine. Cannot send twice")
+    	throw new Exception("Event is already send to the engine. Cannot send it twice")
   }
   
-  def getTimeStamp:Int = timestamp
+  //Send back an unmodifiable timeStamp of this event.
+  def getTimeStamp:Int = { val t = timestamp ; return t }
 }
 
 abstract class TimeBasedEvent(val time:Int) extends Event{
   timestamp = time
   if(!(time > 0))
-    throw new Exception("Time cannot be negative")
+    throw new Exception("Time must be greater then zero")
 	
 	override def setTimestamp(engine:EventBasedEngine) { }
 }
@@ -86,9 +93,11 @@ abstract class TimeBasedEvent(val time:Int) extends Event{
 trait EventClient {
   var engine:EventBasedEngine = null
   
+  //Use this method to send events to the engine and respectively to all EventClients
   def createEvent(event:Event){
     engine.send(event)
   }
   
+  //All occured events will be send to the EventClient.
   def notify(event:Event)
 }

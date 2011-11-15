@@ -3,11 +3,18 @@ package examples.fluspreading
 import graph.Node
 import scala.util.Random
 import org.ubiety.ubigraph.UbigraphClient
+import engine.Event
+import engine.TimeBasedEvent
+import engine.TurnClient
+import engine.RoundClient
+import engine.EventClient
+import engine.SimulationTime
 
 object InfectionStatus extends Enumeration {
     type InfectionStatus = Value
     val Susceptible, Infectious, Removed = Value
 }
+
 
 import InfectionStatus._
 
@@ -33,7 +40,7 @@ class Person(label:Int) extends Node(label) with TurnClient with RoundClient wit
 	
 	var tempStatus:InfectionStatus = null
 	
-    def refreshVisualization(ubigraphClient : UbigraphClient) = {
+    def updateVisualization(ubigraphClient : UbigraphClient) = {
 	  if(needsVisualization){
 	    needsVisualization = false
 		  var color = status match {
@@ -69,7 +76,11 @@ class Person(label:Int) extends Node(label) with TurnClient with RoundClient wit
   
   override def nextRound { updateStatus( tempStatus ) }
 	
-	
+  //Some lame Event Based Example but it works as expected
+  //All person get infected by the same TriggerEvent so on exactly the same time
+  //To simulate this we added randomization to randomize the ordre in case
+  //multiple events occur on the same time.
+  //Perhaps we should randomize the ordre in wich the EventClients receive the Events as well.
   override def notify(event:Event){
     event match {
       case e:TriggerEvent => createEvent(new PersonInfected(this))
@@ -87,7 +98,6 @@ class Person(label:Int) extends Node(label) with TurnClient with RoundClient wit
 	
   private def updateStatus(s:InfectionStatus){
     if(s.equals(status)) return
-    
     status = s
     needsVisualization = true;
   }

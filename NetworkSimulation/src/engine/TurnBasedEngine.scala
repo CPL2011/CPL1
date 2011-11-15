@@ -1,4 +1,4 @@
-package examples.fluspreading
+package engine
 import graph.Graph
 import graph.Traversal
 import graph.Node
