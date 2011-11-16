@@ -130,18 +130,18 @@ override def load():Option[Db4oPersistence] =
     }
 }
 /**
- * This companion object provides a 'static' method for the Db4oPersistence trait which will load an 
- * object from the database located at the path
- * The returned object has the same path variable as the argument(Only 1 Db4oPersistence object should be in
- * the db at all times????)
- */
+  * This companion object provides a 'static' method for the Db4oPersistence trait which will load an 
+  * object from the database located at the path
+  * The returned object has the same path variable as the argument(Only 1 Db4oPersistence object should be in
+  * the db at all times????)
+  */
 object Db4oPersistence extends Db4oPersistence{
   /**
-   * The path of the database
-   * 
-   * Because object cannot have parameters, the path is instantiated as an empty string
-   * but this 'invalid path' is never a problem 
-   */
+    * The path of the database
+    * 
+    * Because object cannot have parameters, the path is instantiated as an empty string
+    * but this 'invalid path' is never a problem 
+    */
   override var path:String = "" 		
   def load(p:String):Option[Db4oPersistence] = {
     setPath(p)
@@ -153,8 +153,8 @@ object Db4oPersistence extends Db4oPersistence{
 }
 
 /**
- * extend DB4O's ObjectSet with scala's Iterator for an easy conversion to a List
- */
+  * extend DB4O's ObjectSet with scala's Iterator for an easy conversion to a List
+  */
 class RichObjectSet[T](objectSet:ObjectSet[T]) extends Iterator[T] {
 	def hasNext:Boolean =  objectSet.hasNext()
 			def next:T = objectSet.next()
