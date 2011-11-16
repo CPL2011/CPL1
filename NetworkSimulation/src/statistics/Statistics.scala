@@ -6,36 +6,36 @@ import examples.fluspreading.VisualGraph
 import examples.fluspreading.Person
 import scala.collection.mutable.ListBuffer
 /**
- * This trait provides the capability for flexible statistics gathering.
- * After the statistics are gathered, a dataset can be written to a file for post analysis, for example by R
- */
+  * This trait provides the capability for flexible statistics gathering.
+  * After the statistics are gathered, a dataset can be written to a file for post analysis, for example by R
+  */
 trait Statistics {
   /**
-   * A HashMap containing String identifiers and listbuffers that contain the results of the data gathering
-   */
+    * A HashMap containing String identifiers and listbuffers that contain the results of the data gathering
+    */
   var results:HashMap[String,ListBuffer[String]] = new HashMap[String,ListBuffer[String]]
   /**
-   * A list that contains a tuple  functions and function-identifiers. 
-   * The functions, which return a single String, are used for the data gathering.
-   * The identifiers are used to add the result of the function to the right result list 
-   */
+    * A list that contains a tuple  functions and function-identifiers. 
+    * The functions, which return a single String, are used for the data gathering.
+    * The identifiers are used to add the result of the function to the right result list 
+    */
   var statistics:List[((Any)=>String,String)] = List()
   /**
-   * The amount of data entries of the results
-   */
+    * The amount of data entries of the results
+    */
   var length:Int = 0
   /**
-   * Indicates if the datagathering has started.
-   * When this is the case, no statistic functions may be added
-   */
+    * Indicates if the datagathering has started.
+    * When this is the case, no statistic functions may be added
+    */
   var started:Boolean = false
 
   /**
-   * Add a statistical function that will be used for data gathering
-   * This will create a new entry in the statistics List and results Map
-   * @param obj a function that given an object returns a string representing the gathered statistic of that object.
-   * @param s an identifier string for the statistic that is added. If this parameter is not unique, the statistic will not be added
-   */
+    * Add a statistical function that will be used for data gathering
+    * This will create a new entry in the statistics List and results Map
+    * @param obj a function that given an object returns a string representing the gathered statistic of that object.
+    * @param s an identifier string for the statistic that is added. If this parameter is not unique, the statistic will not be added
+    */
   def addStatistic(obj:Any=>String,s:String):Unit = {
     if(!results.contains(s)){
     statistics = (obj:Any=>String,s:String)::statistics
@@ -43,9 +43,9 @@ trait Statistics {
     }
   }
   /**
-   * gathers statistics from every function and puts them into the results map
-   * the length variable will be increased by 1
-   */
+    * gathers statistics from every function and puts them into the results map
+    * the length variable will be increased by 1
+    */
   def gatherStat():Unit={
     
     length += 1
@@ -60,10 +60,10 @@ trait Statistics {
   }
   
   /**
-   * This function generates a string that contains all the results
-   * The data is separated by tabs and a header, which will be the statistics identifier, is inserted for each columns
-   * @return A String representing the statistics. The different statistics are speparated by a tab, and the identifier is used a header
-   */
+    * This function generates a string that contains all the results
+    * The data is separated by tabs and a header, which will be the statistics identifier, is inserted for each columns
+    * @return A String representing the statistics. The different statistics are speparated by a tab, and the identifier is used a header
+    */
   def getStatistics():String = {
      var sb:StringBuilder = new StringBuilder
      
@@ -84,9 +84,9 @@ trait Statistics {
      return sb.toString()
   }
   /**
-   * Retrieves the results and writes them to a file
-   * @param path The path of the file 
-   */
+    * Retrieves the results and writes them to a file
+    * @param path The path of the file 
+    */
   def writeStatisticsToFile(path:String){
     try{
     val out = new java.io.FileWriter(path)
