@@ -212,7 +212,9 @@ feedback on this, what elements should I add to the gui? Or am I wasting my time
 -------> It's not a huge priority, but if the other work has been done it's an excellent thing to spend time on.
 -------> I don't know how the xml stuff actually works... if there's the ability to explicitly load/store then perhaps add that
 -------> otherwise you could just provide triggers for the basic functions (add x nodes or add edges with probability,...)
-
+=======>The idea was to provide a simple applet from which the different tests could be launched,
+=======>For each test we could easily change some settings such as the path's to the db/xml/dataset files
+=======>Not to provide a GUI interface to the framework...
 
 
 I kind of don't like how the neighbours/nodes are managed in our graph. Now we keep the neighbour nodes in each node 
