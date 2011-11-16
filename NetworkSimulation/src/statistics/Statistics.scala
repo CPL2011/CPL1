@@ -1,4 +1,4 @@
-package simulation.stat
+package statistics
 import graph.Graph
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.StringBuilder

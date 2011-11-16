@@ -1,7 +1,7 @@
-package simulation
+package examples
 import examples.persistence.XMLGraph
 import scala.collection.mutable.ListBuffer
-import simulation.stat.Statistics
+import statistics.Statistics
 import graph.Visualizable 
 import graph.DepthFirstTraversal
 import graph.Node
