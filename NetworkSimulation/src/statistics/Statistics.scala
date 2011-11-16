@@ -5,22 +5,48 @@ import scala.collection.mutable.StringBuilder
 import examples.fluspreading.VisualGraph
 import examples.fluspreading.Person
 import scala.collection.mutable.ListBuffer
-
+/**
+ * This trait provides the capability for flexible statistics gathering.
+ * After the statistics are gathered, a dataset can be written to a file for post analysis, for example by R
+ */
 trait Statistics {
-  var statistics:List[((Statistics)=>String,String)] = List()
+  /**
+   * A HashMap containing String identifiers and listbuffers that contain the results of the data gathering
+   */
   var results:HashMap[String,ListBuffer[String]] = new HashMap[String,ListBuffer[String]]
+  /**
+   * A list that contains a tuple  functions and function-identifiers. 
+   * The functions, which return a single String, are used for the data gathering.
+   * The identifiers are used to add the result of the function to the right result list 
+   */
+  var statistics:List[((Any)=>String,String)] = List()
+  /**
+   * The amount of data entries of the results
+   */
   var length:Int = 0
+  /**
+   * Indicates if the datagathering has started.
+   * When this is the case, no statistic functions may be added
+   */
+  var started:Boolean = false
 
-  def addStatistic(g:Statistics=>String,s:String):Unit = {
-    
-    statistics = (g:Statistics=>String,s:String)::statistics
+  /**
+   * Add a statistical function that will be used for data gathering
+   * This will create a new entry in the statistics List and results Map
+   * @param obj a function that given an object returns a string representing the gathered statistic of that object.
+   * @param s an identifier string for the statistic that is added. If this parameter is not unique, the statistic will not be added
+   */
+  def addStatistic(obj:Any=>String,s:String):Unit = {
+    if(!results.contains(s)){
+    statistics = (obj:Any=>String,s:String)::statistics
     results.put(s,new ListBuffer[String])
-    
+    }
   }
   /**
    * gathers statistics from every function and puts them into the results map
+   * the length variable will be increased by 1
    */
-  def gatherStat(){
+  def gatherStat():Unit={
     
     length += 1
     for((f,id)<-statistics){
@@ -34,14 +60,14 @@ trait Statistics {
   }
   
   /**
-   * this function generates a string that contains all the results
-   * The data is separated by tabs
-   * A header is also used
+   * This function generates a string that contains all the results
+   * The data is separated by tabs and a header, which will be the statistics identifier, is inserted for each columns
+   * @return A String representing the statistics. The different statistics are speparated by a tab, and the identifier is used a header
    */
   def getStatistics():String = {
      var sb:StringBuilder = new StringBuilder
      
-     for(id<-results.keySet) sb.append(id + "\t")
+     for(id<-results.keySet) sb.append("[" + id + "]" + "\t")
      
      sb.append("\n")
      
@@ -57,19 +83,28 @@ trait Statistics {
      }
      return sb.toString()
   }
+  /**
+   * Retrieves the results and writes them to a file
+   * @param path The path of the file 
+   */
   def writeStatisticsToFile(path:String){
+    try{
     val out = new java.io.FileWriter(path)
     out.write(getStatistics())
     out.close
+    }catch{
+      case e:Exception=>println("could not write to file " + path)
+    }
   }
+  
   /******************************************************************
    * 		definition of a couple of statistics funcitons			*
    *****************************************************************/
-  def numberOfNodes(g:Statistics):String = g match{
+  def numberOfNodes(g:Any):String = g match{
     case g:Graph=>g.nodes.size.toString()
     case _ => ""
   }
-  def averageNeighbores(g:Statistics):String = g match{
+  def averageNeighbores(g:Any):String = g match{
     case g:Graph=>{
 	  	var nr = 0f
 	    for(n<-g.nodes.values){
@@ -80,14 +115,7 @@ trait Statistics {
     case _=>""
   }
     
-  def numberOfInfected(g:VisualGraph):String = {
-    	var infected:Int=0
-  		for(n<-g.nodes) n match{
-  		  case n:Person=>if(n.isInfected)infected+=1
-  		  case _ =>
-  		}
-    	return infected.toString()
-    }
+
   
 
 }
