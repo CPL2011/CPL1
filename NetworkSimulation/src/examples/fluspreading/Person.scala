@@ -30,7 +30,7 @@ class Person(label:Int) extends Node(label) with TurnClient with RoundClient wit
 	val RED = "#ff0000"
 	val GREEN = "#00ff00"
 	val BLUE = "#0000ff"
-	val INFECTIONRATE:Float = 0.01f
+	val INFECTIONRATE:Float = 0.1f
 	val INFECTION_DURATION = 1 * SimulationTime.TICKS_PER_HOUR
 	
 	var infectionrate:Float = INFECTIONRATE
@@ -78,16 +78,16 @@ class Person(label:Int) extends Node(label) with TurnClient with RoundClient wit
 	
   //Some lame Event Based Example but it works as expected
   //All person get infected by the same TriggerEvent so on exactly the same time
-  //To simulate this we added randomization to randomize the ordre in case
+  //To simulate this we added randomization to randomize the order in case
   //multiple events occur on the same time.
-  //Perhaps we should randomize the ordre in wich the EventClients receive the Events as well.
+  //Perhaps we should randomize the order in wich the EventClients receive the Events as well.
   override def notify(event:Event){
     event match {
       case e:TriggerEvent => createEvent(new PersonInfected(this))
       case e:PersonInfected =>
         if( e.person.equals(this) )
         	updateStatus(InfectionStatus.Infectious)
-        	createEvent(new PersonDead(this, e.getTimeStamp + 2000))
+        	createEvent(new PersonDead(this, e.getTimeStamp + SimulationTime.TICKS_PER_MINUTE * 20))
         //status = getNextStatus( 1 * SimulationTime.TICKS_PER_MINUTE)
       case e:PersonDead => 
         if(e.person.equals(this))
@@ -96,18 +96,25 @@ class Person(label:Int) extends Node(label) with TurnClient with RoundClient wit
     }
   }
 	
-  private def updateStatus(s:InfectionStatus){
+  def updateStatus(s:InfectionStatus){
     if(s.equals(status)) return
     status = s
     needsVisualization = true;
   }
   
   private def expose(duration:Int) :InfectionStatus = {
-    var infectedNeighbours = 1
+    var infectedNeighbours = getNeighbours.count(isInfected)
     var exposurerate = Math.min(1, duration * 1.0f / SimulationTime.TICKS_PER_MINUTE)
     if(Random.nextFloat()> Math.pow(1-infectionrate*exposurerate,infectedNeighbours))
       return Infectious
     return status
+  }
+  
+  private def isInfected(node:Node):Boolean = {
+    node match{
+      case p:Person => p.isInfected
+      case _ => false
+    }
   }
 	
   def isInfected:Boolean = {

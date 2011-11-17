@@ -3,10 +3,18 @@ package engine
 import graph.Graph
 import graph.Node
 
+/**
+ * Round based engine will first call doRound and then nextRound on each RoundClient.
+ * You can prepare the next status of the RoundClient in doRound and when nextRound is called
+ * set the next status as the current status of the RoundClient.
+ */
 class RoundBasedEngine(graph:Graph) extends SimulationEngine(graph) {
 	var ticksPerStep:Int = 10
 	var roundClients:List[RoundClient] = List[RoundClient]()
   
+	/**
+	 * Start the engine
+	 */
   def run() {
 	  println("RoundBasedEngine started");
 	  while(shouldContinue) {
@@ -34,11 +42,15 @@ class RoundBasedEngine(graph:Graph) extends SimulationEngine(graph) {
 	  c.nextRound
 	}
 
-  def addRoundClient(client:RoundClient) {
-    roundClients ::= client
-  }
+	def addRoundClient(client:RoundClient) {
+		roundClients ::= client
+	}
 }
 
+/**
+ * RoundClients can be added tot the RoundBasedEngine.
+ * The engine will call the doRound and nextRound functions with the correct arguments
+ */
 trait RoundClient{
   def doRound(timestamp:Int, duration:Int)
   def nextRound

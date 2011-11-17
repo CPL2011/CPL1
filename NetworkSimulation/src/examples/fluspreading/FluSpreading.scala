@@ -1,5 +1,6 @@
 package examples.fluspreading
 
+import scala.util.Random
 import graph.BreadthFirstTraversal
 import graph.Node
 import graph.Graph
@@ -12,24 +13,27 @@ import engine.SimulationEngine
 import engine.Condition
 import engine.SimulationTime
 import engine.RoundBasedEngine
+import engine.EventClient
+import engine.TurnClient
+import engine.RoundClient
 
 object FluSpreading {
   
   def main(args: Array[String]) {
+    val infectedPersonRate = 0.03f
 	  var graph = new VisualGraph
 	  var visualizer = new GraphVisualizer(graph)
-      graph.setRemoteUbigraphServerHost("http://192.168.132.131:20738/RPC2")
+      graph.setRemoteUbigraphServerHost("http://192.168.132.132:20738/RPC2")
       
-      var p:Person = new Person(0)
-      graph.addNode(p)
-      var i:Int = 1
-      while(i < 100){
-    	  graph.addNode(new Person(i))
-    	  graph.addEdge(i-1,i)
-    	  graph.addEdge(i,i-1)
+      var i:Int = 0
+      while(i < 200){
+    	  var p:Person = new Person(i)
+    	  if(infectedPersonRate > Random.nextFloat())
+    	    p.updateStatus(InfectionStatus.Infectious)
+    	  graph.addNode(p)
     	  i += 1
       }
-      
+      graph.addUnidirectionalEdges(0.005)
 	  graph.ubigraphClient.clear()
 	  
 	  //startTurnBasedEngine(graph,visualizer)
@@ -43,6 +47,7 @@ object FluSpreading {
 	  var engine = new RoundBasedEngine(graph)
 	  setStopCondition(engine)
       engine.addRoundClient(visualizer)
+      engine.addRoundClient(engineMonitor)
       engine.run
   }
   
@@ -59,6 +64,7 @@ object FluSpreading {
 	  var engine = new TurnBasedEngine(graph)
 	  setStopCondition(engine)
       engine.addTurnClient(visualizer)
+      engine.addTurnClient(engineMonitor)
       engine.run
   }
   
@@ -70,6 +76,27 @@ object FluSpreading {
           return false
         }
       })
+  }
+}
+object engineMonitor extends RoundClient with EventClient with TurnClient {
+  val refreshRate:Int = SimulationTime.TICKS_PER_MINUTE * 20
+  var nextRefresh:Int = 0
+  
+  def doTurn(time:Int, duration:Int){
+    displayTime(time)
+  }
+  def doRound(time:Int, duration:Int){
+    displayTime(time)
+  }
+  private def displayTime(time:Int) {
+    if(time >= nextRefresh) {
+      println("CurrentTime: " + SimulationTime.toString(time) );
+      nextRefresh = nextRefresh + refreshRate
+    }
+  }
+  def nextRound() {}
+  def notify(event:Event){
+    
   }
 }
 class TriggerEvent(time:Int) extends TimeBasedEvent(time) {
