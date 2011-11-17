@@ -7,8 +7,13 @@ import graph.Node
  * Round based engine will call doTurn on each Client with the current time
  */
 class TurnBasedEngine(graph: Graph) extends SimulationEngine(graph){
-	//Each step the simulation will proceed a couple of steps.
-	//Increasing the step size will allow the clients to advance more per step.
+	/**
+	 * Each step the simulation will proceed a couple of steps.
+	 * Increasing the step size will allow the clients to advance more per step.
+	 * Resulting in a faster simulation as there will be less points in time to calculate.
+	 * Reducing the step size on the other hand will increase the precision of each step.
+	 */
+	//
 	var ticksPerStep:Int = 10
 	
 	//Keep a list of all additional TurnClients

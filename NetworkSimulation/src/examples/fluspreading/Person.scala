@@ -10,6 +10,7 @@ import engine.RoundClient
 import engine.EventClient
 import engine.SimulationTime
 
+
 object InfectionStatus extends Enumeration {
     type InfectionStatus = Value
     val Susceptible, Infectious, Removed = Value
@@ -30,12 +31,12 @@ class Person(label:Int) extends Node(label) with TurnClient with RoundClient wit
 	val RED = "#ff0000"
 	val GREEN = "#00ff00"
 	val BLUE = "#0000ff"
-	val INFECTIONRATE:Float = 0.1f
-	val INFECTION_DURATION = 1 * SimulationTime.TICKS_PER_HOUR
+	val INFECTIONRATE:Float = 0.2f
+	val INFECTION_DURATION = 20 * SimulationTime.TICKS_PER_MINUTE
 	
 	var infectionrate:Float = INFECTIONRATE
 	var status:InfectionStatus = Susceptible
-	var infectionDuration:Int = 20 * SimulationTime.TICKS_PER_MINUTE
+	var infectionDuration:Int = INFECTION_DURATION
 	var needsVisualization = true;
 	
 	var tempStatus:InfectionStatus = null
@@ -121,6 +122,12 @@ class Person(label:Int) extends Node(label) with TurnClient with RoundClient wit
     if(status.equals(Infectious))
       return true
     return false
+  }
+  
+  def resetState {
+    infectionDuration = INFECTION_DURATION
+    needsVisualization = true
+    status = InfectionStatus.Susceptible
   }
 }
 

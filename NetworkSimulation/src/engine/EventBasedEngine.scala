@@ -6,7 +6,13 @@ import com.sun.xml.internal.ws.api.pipe.Engine
 import scala.util.Random
 import scala.collection.mutable.PriorityQueue
 
+/**
+ * EventBasedEngine will handle the events.
+ * All Clients receive all Events in a correct ordre of time.
+ * If Events have occured before current simulation time a warning is printed.
+ */
 class EventBasedEngine(graph:Graph) extends SimulationEngine(graph) {
+  private val randomization = 100
   var events:PriorityQueue[Event] = new PriorityQueue[Event]()
   var clients:List[EventClient] = List[EventClient]()
   
@@ -31,6 +37,7 @@ class EventBasedEngine(graph:Graph) extends SimulationEngine(graph) {
   
   /**
    * Add clients to the engine
+   * @param client : Is the event client that now can send and receive Events.
    */
   def addEventClient(client:EventClient) : Boolean = {
     if(client.engine != null && !this.equals(client.engine))
@@ -48,11 +55,13 @@ class EventBasedEngine(graph:Graph) extends SimulationEngine(graph) {
   
   /**
    * Adds an event to the Queue of the engine.
-   * This event will be send to all clients after all previous events are send
+   * This event will be send to all clients after all previous events are send.
+   * If multiple events occur on the same time the ordre in wich the events occur will be randomized.
+   * @param event : Event that should be send to all clients
    */
   def send(event:Event){
     event.setTimestamp(this)
-	event.prepareOrdening
+	event.prepareOrdening(randomization)
     events.enqueue(event)
     }
 }
@@ -72,8 +81,11 @@ abstract class Event extends Ordered[Event] {
   
   final def compare(e:Event) = e.ordening - ordening
   
-  //EventClients normaly have no direct access to the engine so they cannot easily abuse this method
-  //as this method is meant to be used only by the EventClient trait.
+  /**
+   * This is a library method only. The timestamp will be set automaticaly when the Event is send.
+   * You can override this method to set the timestamp of this event manualy or you can use the TimeBasedEvent class.
+   * @param engine : EventBasedEngine that will handle this event.
+   */
   def setTimestamp(engine:EventBasedEngine){
       if(timestamp < 0)
     	timestamp = engine.getCurrentTime + delay
@@ -81,12 +93,15 @@ abstract class Event extends Ordered[Event] {
     	throw new Exception("Timestamp of event is Modified!\n Pleas use the TimeBasedEvent class if you would like to set timestamp manualy.")
   }
   
-  final def prepareOrdening {
+  /**
+   * This is a library method only. The ordening value is the timestamp with some randomization.
+   */
+  def prepareOrdening(randomization:Int) {
     if(ordening < 0)
       if(timestamp < 0)
         throw new Exception("TimeStamp not set. Cannot prepare Ordening. \nIf you use the EventClient.createEvent method the Event will be ordened.")
       else
-    	ordening = timestamp*100 + Random.nextInt(100)
+    	ordening = timestamp*randomization + Random.nextInt(randomization)
     else
     	throw new Exception("Event is already send to the engine. Cannot send it twice")
   }
@@ -97,6 +112,7 @@ abstract class Event extends Ordered[Event] {
 
 /**
  * This class can be used if you would like to create Events with specific timeStamps.
+ * @param time : Time at wich the event should occur.
  */
 abstract class TimeBasedEvent(val time:Int) extends Event{
   timestamp = time
@@ -114,9 +130,15 @@ abstract class TimeBasedEvent(val time:Int) extends Event{
  * To send events clients can use the createEvent(Event) method wich is already defined.
  */
 trait EventClient {
+  /**
+   * the engine is automaticaly added after the client is added to the engine
+   */
   var engine:EventBasedEngine = null
   
-  //Use this method to send events to the engine and respectively to all EventClients
+  /**
+   * Use this method to send events to the engine and respectively to all EventClients
+   * @param event : Event that has to be send to the EventEngine of this Client
+   */
   final def createEvent(event:Event){
     engine.send(event)
   }

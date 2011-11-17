@@ -18,13 +18,16 @@ import engine.TurnClient
 import engine.RoundClient
 
 object FluSpreading {
+  val infectedPersonRate = 0.03f
   
   def main(args: Array[String]) {
-    val infectedPersonRate = 0.03f
+    
+    println("Fluespreading example will start 3 times each time with another Engine.");
 	  var graph = new VisualGraph
 	  var visualizer = new GraphVisualizer(graph)
-      graph.setRemoteUbigraphServerHost("http://192.168.132.132:20738/RPC2")
-      
+	  if(args.length > 0)
+		  graph.setRemoteUbigraphServerHost(args.first)
+		  
       var i:Int = 0
       while(i < 200){
     	  var p:Person = new Person(i)
@@ -34,20 +37,34 @@ object FluSpreading {
     	  i += 1
       }
       graph.addUnidirectionalEdges(0.005)
-	  graph.ubigraphClient.clear()
 	  
-	  //startTurnBasedEngine(graph,visualizer)
-	  //ubigraphClient.clear
-	  //startRoundBasedEngine(graph,visualizer)
-	  //ubigraphClient.clear
+	  startTurnBasedEngine(graph,visualizer)
+	  graph.removeVisualization
+	  graph.nodes.values.foreach(resetPerson)
+	  graph.visualize
+	  startRoundBasedEngine(graph,visualizer)
+	  graph.removeVisualization
+	  graph.nodes.values.foreach(resetPerson)
+	  graph.visualize
 	  startEventBasedEngine(graph,visualizer)
+      println("Fluespreading done");
+  }
+  
+  private def resetPerson(node:Node) {
+    node match {
+      case p:Person =>
+        p.resetState
+        if(infectedPersonRate > Random.nextFloat())
+        	p.updateStatus(InfectionStatus.Infectious)
+      case _ =>
+    }
   }
   
   private def startRoundBasedEngine(graph:Graph,visualizer:GraphVisualizer) {
 	  var engine = new RoundBasedEngine(graph)
 	  setStopCondition(engine)
       engine.addRoundClient(visualizer)
-      engine.addRoundClient(engineMonitor)
+      engine.addRoundClient(new engineMonitor)
       engine.run
   }
   
@@ -64,7 +81,7 @@ object FluSpreading {
 	  var engine = new TurnBasedEngine(graph)
 	  setStopCondition(engine)
       engine.addTurnClient(visualizer)
-      engine.addTurnClient(engineMonitor)
+      engine.addTurnClient(new engineMonitor)
       engine.run
   }
   
@@ -78,7 +95,7 @@ object FluSpreading {
       })
   }
 }
-object engineMonitor extends RoundClient with EventClient with TurnClient {
+class engineMonitor extends RoundClient with TurnClient {
   val refreshRate:Int = SimulationTime.TICKS_PER_MINUTE * 20
   var nextRefresh:Int = 0
   
@@ -95,9 +112,6 @@ object engineMonitor extends RoundClient with EventClient with TurnClient {
     }
   }
   def nextRound() {}
-  def notify(event:Event){
-    
-  }
 }
 class TriggerEvent(time:Int) extends TimeBasedEvent(time) {
   var name = "TriggerEvent"

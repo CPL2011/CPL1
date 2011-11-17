@@ -9,26 +9,33 @@ import engine.EventBasedEngine
 import engine.RoundBasedEngine
 import graph.Graph
 
-object SocialNetwork extends Application {
+object SocialNetwork {
   
-  var graph = new VisualGraph
-  var visualizer = new GraphVisualizer(graph)
-  graph.setRemoteUbigraphServerHost("http://192.168.56.101:20738/RPC2")
-  
-  var i:Int = 0
-  while(i < 100){
-    graph.addNode(new Person(i))
-    i += 1
+  def main(args: Array[String]) {
+    
+    println("Social networks starting.");
+	  var graph = new VisualGraph
+	  var visualizer = new GraphVisualizer(graph)
+	  
+	  if(args.length>0)
+		  graph.setRemoteUbigraphServerHost(args.first)
+	  
+	  var i:Int = 0
+	  while(i < 100){
+	    graph.addNode(new Person(i))
+	    i += 1
+	  }
+	  graph.addBidirectionalEdges(0.02)
+	  
+	  graph.ubigraphClient.clear()
+	  
+	  //startTurnBasedEngine(graph,visualizer)
+	  //ubigraphClient.clear
+	  //startRoundBasedEngine(graph,visualizer)
+	  //ubigraphClient.clear
+	  startEventBasedEngine(graph,visualizer)
+	  println("Social networks stopped.");
   }
-  graph.addBidirectionalEdges(0.02)
-  
-  graph.ubigraphClient.clear()
-  
-  //startTurnBasedEngine(graph,visualizer)
-  //ubigraphClient.clear
-  //startRoundBasedEngine(graph,visualizer)
-  //ubigraphClient.clear
-  startEventBasedEngine(graph,visualizer)
   
   private def startTurnBasedEngine(graph:VisualGraph,visualizer:GraphVisualizer){
 	  var engine = new TurnBasedEngine(graph)
