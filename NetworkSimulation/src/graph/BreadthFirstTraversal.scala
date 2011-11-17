@@ -4,8 +4,12 @@ import scala.collection.mutable.ListBuffer
   *An object that provides the functionality to traverse nodes breadth first 
   */
 object BreadthFirstTraversal extends Traversal {
-  /**
-    *TODO 
+
+   /**
+    * traverses the connected part of a graph, breadth-first starting from the given node, whilst applying the given
+    * higher order function on each visited node.
+    * @param f : a higher order function getting a Node as argument and returning Nothing
+    * @param node : an instance of the class Node representing the root from where the traversal will begin
     */
   def traverse(f: Node => Unit, node: Node) = {
     def bft(f: Node => Unit, node: Node) : Unit = {
