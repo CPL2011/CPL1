@@ -32,8 +32,11 @@ trait Visualizable extends Graph {
    * a Ubigraph server. (http://<Server IP>:<Port>/RPC2)
    * e.g.: http://192.168.253.134:20738/RPC2
    */
-  def setRemoteUbigraphServerHost(ubigraphServerHost: String) = 
+  def setRemoteUbigraphServerHost(ubigraphServerHost: String) = {
     ubigraphClient = new UbigraphClient(ubigraphServerHost)
+    ubigraphClient.clear()
+  }
+ 
   
   /**
    * Provides a visualization as specified by the underlying graph.

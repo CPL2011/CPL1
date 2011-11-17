@@ -1,3 +1,84 @@
+FINAL
+_____
+As mentioned in a previous commit edges can be successfully added directly to the graph now.
+Apart from this I also wanted to explicitly code in the directed/undirected aspects, but it seems as if this can't be done as cleanly as I hoped.
+
+The following code successfully displays 'arrowheads' where appropriate, what should probably be added are overrided methods to add and remove nodes in UndirVisualizable...
+In practice this struck me as ugly though, so I'm not sure if I should go on or just abort...
+
+Either way, the project should be coming to a close...if you want to I'll commit this, but perhaps we might leave it as it is?
+If you want to you can commit this as well, it's valid, working code (some access modifiers in Visualizable might have to be modified though)
+
+Keep in mind that I wont have much time to do work on thursday (probably just enough to document The graph package classes).
+
+package graph
+
+trait DirVisualizable extends Visualizable {
+
+  override def visualizeEdges(updateEdge : Edge => Any) = {
+    ubigraphClient.setEdgeStyleAttribute(0, "arrow", "true")
+    super.visualizeEdges(updateEdge)
+  }
+  
+  /**
+   * Adds unidirectional edges between nodes in the graph that are not yet connected,
+   * with a given probability.
+   */
+  def addEdges(probability: Double) = {
+    val destinations = nodes.values.toList
+    nodes.values.foreach(source =>
+      destinations.foreach(destination =>
+        if(source != destination && !source.getNeighbours.contains(destination) && Math.random < probability)
+          source.addNeighbour(destination)
+      )
+    )
+  }
+}
+
+
+
+
+package graph
+import scala.collection.immutable.HashMap
+
+trait UndirVisualizable extends Visualizable {
+
+  override def visualizeEdges(updateEdge : Edge => Any) = {
+    ubigraphClient.setEdgeStyleAttribute(0, "arrow", "false")
+    unvisualizeEdgesToBeRemoved
+    var edges = new HashMap[(Int,Int),Edge]
+    nodes.values.foreach(e => e.originatingEdges.values.foreach(edge => if(!edges.contains(edge.source.label,edge.destination.label) && !edges.contains(edge.destination.label,edge.source.label)) edges += (((edge.source.label, edge.destination.label),edge))))
+    edges.values.foreach(e => if (visualizedEdges.contains(e)) updateEdge(e) else {
+      if (ubigraphClient.newEdge(cantorPairing(e.source.label, e.destination.label), e.source.label, e.destination.label) == 0) {
+        visualizedEdges += e
+        updateEdge(e)
+      } else System.err.println("Error: The edge (" + e.source.label + "," + e.destination.label + ") has already been visualized. The internal logic should prevent this from occurring")
+    }) 
+
+  }
+  
+  /**
+   * Adds bidirectional edges between nodes in the graph that are not yet connected,
+   * with a given probability.
+   */
+  def addEdges(probability: Double) = {
+    var destinations = nodes.values.toList.tail
+    nodes.values.foreach(source => {
+      if (!destinations.isEmpty) {
+        destinations.foreach(destination =>  
+          if (!source.getNeighbours.contains(destination) && Math.random < probability) {
+            source.addNeighbour(destination)
+            destination.addNeighbour(source)
+          }
+        )
+        destinations = destinations.tail 
+      }
+    })
+  }	
+}
+
+
+
 
 TODO's
 ____________
@@ -125,6 +206,17 @@ but at least it works:) Just do "graph.save(path)" to save it, and to load from 
 
 IDEAS
 _____________
+I have made a simple scala.swing gui that can be used to pass arguments (such as the ubigraph server) to our
+tests. As of now I only implemented some input fields, but they dont do anything. I would like to get some 
+feedback on this, what elements should I add to the gui? Or am I wasting my time with this?:p
+-------> It's not a huge priority, but if the other work has been done it's an excellent thing to spend time on.
+-------> I don't know how the xml stuff actually works... if there's the ability to explicitly load/store then perhaps add that
+-------> otherwise you could just provide triggers for the basic functions (add x nodes or add edges with probability,...)
+=======>The idea was to provide a simple applet from which the different tests could be launched,
+=======>For each test we could easily change some settings such as the path's to the db/xml/dataset files
+=======>Not to provide a GUI interface to the framework...
+
+
 I kind of don't like how the neighbours/nodes are managed in our graph. Now we keep the neighbour nodes in each node 
 and we keep the edges(that also contain nodes) in the graph. This is double the work. I would only keep edges to neighbours in the 
 Node, so the graph only has a map of nodes. However it could be that the way it is now implemented was done for

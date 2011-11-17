@@ -4,16 +4,34 @@ import scala.collection.immutable.HashMap
 import graph.Node
 import java.io.File
 
-
+/**
+  * A trait that provides the functionality to store an XML representation of an object
+  */
 trait XMLPersistence extends Graph with Persistence with XML{
- 
-  def loadFile()=scala.xml.XML.loadFile(path)
-  /**
-   * abstract methods
-   */
-  override def load():Option[XMLPersistence]
-  override def toXML():scala.xml.Node
   
+  
+  /*abstract methods
+   *These methods need to be implemented in the classes which use this trait
+   */
+  /**
+    * Loads an object
+    * @return An object that is constructed from an XML file. This is an Option because there is a possibility that the load can fail
+    */
+  override def load():Option[XMLPersistence]
+  /**
+    * Creates an XML representation of the object
+    * @return The XML representation of the object
+    */
+  override def toXML():scala.xml.Node
+  /**
+    * Loads a file from the path
+    * @return an XML Node containing the XML in the path
+    */
+  def loadFile():scala.xml.Node = scala.xml.XML.loadFile(path)
+  
+  /**
+    * Saves the XML representation of the object at the path-field
+    */
   def save() {
     try{
     val f:File = new File(path)

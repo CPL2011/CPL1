@@ -1,7 +1,12 @@
 package graph
 import scala.collection.mutable.ListBuffer
-
+/**
+  *An object that provides the functionality to traverse nodes breadth first 
+  */
 object BreadthFirstTraversal extends Traversal {
+  /**
+    *TODO 
+    */
   def traverse(f: Node => Unit, node: Node) = {
     def bft(f: Node => Unit, node: Node) : Unit = {
       var queue = new ListBuffer[Node]()
