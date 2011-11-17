@@ -21,7 +21,7 @@ class TurnBasedEngine(graph: Graph) extends SimulationEngine(graph){
 	    turnClients.foreach(c=>c.doTurn(currentTime,ticksPerStep))
 	    currentTime += ticksPerStep
 	  }
-	  println("TurnbasedEngine started");
+	  println("TurnbasedEngine stopped");
 	}
 	
 	def addTurnClient(c:TurnClient) {
