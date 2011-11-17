@@ -96,6 +96,7 @@ override def myNode.visualize(ubi){
 //----------> Ah I think I understand, it's the problem with accessing the vars of your extended Node thing?
 //----------> this could also be solved by relying on generics? Either way, I'm not really certain I understand 
 //----------> the reasoning entirely...feel free to make changes where appropriate.
+///You understand it verry well. Visualization should not be in Node but in some trait. Lets try to find another way then using generics. :p
 
 
 - I need to update ubigraphClient for my server to work all right. So if you make ubigraphclient a val I can't visualize. Perhaps make two constructors of VisualizableGraph. One with the serverString and one Witout...
@@ -106,9 +107,8 @@ _____________
 - the db4o storage still does not work properly and I probably do not have the time today/tomorrow to fix it... 
 The problem is that db4o does not store the references that are stored in the graph object. I tried the config
 method, but it did not work.
-- Simulation Engine and TurnBasedEngine started (Jordi)
-- Continued coding Flu Spreading from Node.infection
 
+- Simulation Engine ready for inspection
 
 
 DONE
