@@ -59,14 +59,20 @@ class Graph(nodeMap : HashMap[Int, Node]) {
     nodes.values.foreach(node =>
       if(Math.random < probability) removeNode(node.label)
     )
-    /**
-     * indirectly inform the nodes of an edge that this edge is connected to the nodes
-     * @param edge
-     */
+  /**
+   * indirectly inform the nodes of an edge that this edge is connected to the nodes
+   * @param edge
+   */
   def addEdge(edge: Edge) = {
 	  edge.informNodes(this)
   }
   
+  /**
+   * creates an edge using the nodes with the given nodeID's as source and destination respectively.
+   * The newly created new gets added to this graph
+   * @param source : the ID of the source of the edge you want to add to the graph
+   * @param destination : the ID of the destination of the edge you want to add to the graph
+   */
   def addEdge(source: Int, destination: Int) = {
     (nodes.get(source), nodes.get(destination)) match {
       case (Some(sourceNode), Some(destinationNode)) => {
@@ -128,6 +134,13 @@ class Graph(nodeMap : HashMap[Int, Node]) {
     })
   }
 
+  /**
+   * If present in this graph, the edge who has a source and destination node with the given IDs gets 
+   * removed from this graph
+   * If not present, an error message is printed on the output
+   * @param source : the ID of the source of the edge you want to remove from the graph
+   * @param destination : the ID of the destination of the edge you want to remove from the graph
+   */
   def removeEdge(source: Int, destination: Int) = {
     (nodes.get(source), nodes.get(destination)) match {
       case (Some(sourceNode), Some(destinationNode)) => {
@@ -139,6 +152,11 @@ class Graph(nodeMap : HashMap[Int, Node]) {
     }
   }
   
+  /**
+   * Considers the removal of each respective edge of this graph using the given probability as likelihood of
+   * removal.
+   * @param probability : the likelihood that an edge will be removed
+   */
   def removeEdges(probability: Double) = {
 	var edges = new ListBuffer[Edge]
 	traverse(DepthFirstTraversal, (node) => edges ++= node.originatingEdges.values)
@@ -147,6 +165,12 @@ class Graph(nodeMap : HashMap[Int, Node]) {
     )
   }
   
+  /**
+   * Traverses the nodes in the graph (reachable from the node with the given nodeID) using the specified method of traversal, applying the given
+   * higher order function on each visited node, starting with the node that has the given nodeID as its label.
+   * If the given nodeID does not refer to an existing node in this graph, the def will print an error message
+   * on the output
+   */
   def traverse(traverser: Traversal, f: Node => Unit, nodeID: Int) = {
     nodes.get(nodeID) match {
       case Some(node) => {
@@ -159,6 +183,13 @@ class Graph(nodeMap : HashMap[Int, Node]) {
     
   }
   
+  /**
+   * Traverses every single node of the graph using the specified method of traversal 
+   * for visiting each part of the graph. The given higher order function is applied on each node of the graph,
+   * in the order specified by the given Traversal object
+   * @param traverser : An instance of Traversal, specifying the manner in which the graph gets traversed
+   * @param f : A higher order function to be applied to each node of the graph
+   */
   def traverse(traverser: Traversal, f: Node => Unit) = {
     var visitedNodes = new ListBuffer[Node]()
     while(nodes.values.toList.diff(visitedNodes).size != 0) {
@@ -177,8 +208,14 @@ class Graph(nodeMap : HashMap[Int, Node]) {
     }
   }
   
+  /**
+   * Traverses the entire graph using the specified traversal.
+   */
   def traverse(traverser: Traversal) : Unit = traverse(traverser, (node: Node) => ())
   
+  /**
+   * Traverses the portion of the graph that is reachable from the node with the given nodeID
+   */
   def traverse(traverser: Traversal, nodeInt: Int) : Unit = traverse(traverser, (node: Node) => (), nodeInt)
 }
 
