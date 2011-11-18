@@ -25,7 +25,13 @@ class TurnBasedEngine(graph: Graph) extends SimulationEngine(graph){
 	override def run() {
 	  println("TurnBasedEngine started");
 	  while(shouldContinue) {
-	    var itt:Iterator[Node] = graph.nodes.valuesIterator
+	    doStep
+	  }
+	  println("TurnbasedEngine stopped");
+	}
+	
+	override def doStep(){ 
+	  var itt:Iterator[Node] = graph.nodes.valuesIterator
 	    while(itt.hasNext) {
 	      var next:Node = itt.next
 	      next.doTurn(currentTime,ticksPerStep)
@@ -33,14 +39,13 @@ class TurnBasedEngine(graph: Graph) extends SimulationEngine(graph){
 	    }
 	    turnClients.foreach(c=>c.doTurn(currentTime,ticksPerStep))
 	    currentTime += ticksPerStep
-	  }
-	  println("TurnbasedEngine stopped");
 	}
 	
 	def addTurnClient(c:TurnClient) {
 	  turnClients ::= c
 	}
 }
+	
 
 /**
  * TurnClients can be added tot the TurnBasedEngine.

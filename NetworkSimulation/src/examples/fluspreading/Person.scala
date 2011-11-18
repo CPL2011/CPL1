@@ -118,16 +118,25 @@ class Person(label:Int) extends Node(label) with TurnClient with RoundClient wit
     }
   }
 	
-  def isInfected:Boolean = {
-    if(status.equals(Infectious))
-      return true
-    return false
+
+    def isInfected:Boolean = {
+    if(status.equals(Infectious)) true
+    else false
   }
-  
+  def isSusceptible:Boolean = {
+    if(status.equals(Susceptible)) true
+    else false
+  }
+  def isRemoved:Boolean = {
+    if(status.equals(Removed)) true
+    else false
+  }
   def resetState {
     infectionDuration = INFECTION_DURATION
     needsVisualization = true
     status = InfectionStatus.Susceptible
   }
+  
 }
+
 

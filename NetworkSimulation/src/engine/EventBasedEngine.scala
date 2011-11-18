@@ -22,7 +22,13 @@ class EventBasedEngine(graph:Graph) extends SimulationEngine(graph) {
   def run(){
     println("EventEngine started");
         while(shouldContinue && !events.isEmpty) {
-          var event = events.dequeue()
+          doStep()
+          
+        }
+    println("EventEngine stopped");
+  }
+  override def doStep(){
+    var event = events.dequeue()
           currentTime = event.getTimeStamp
           var itt:Iterator[Node] = graph.nodes.valuesIterator
           	while(itt.hasNext) {
@@ -31,10 +37,7 @@ class EventBasedEngine(graph:Graph) extends SimulationEngine(graph) {
           	  n.notify(event)
           	}
           clients.foreach(client=> client.notify(event) )
-        }
-    println("EventEngine stopped");
   }
-  
   /**
    * Add clients to the engine
    * @param client : Is the event client that now can send and receive Events.

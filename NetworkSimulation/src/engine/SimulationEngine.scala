@@ -7,7 +7,7 @@ abstract class SimulationEngine(graph:Graph) {
   var conditions:List[Condition] = List[Condition]()
   
   def run
-  
+  def doStep { }
   /**
   * If one condition returns false ShouldContinue is false.
   */

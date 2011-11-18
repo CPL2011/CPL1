@@ -5,11 +5,27 @@ import scala.collection.mutable.StringBuilder
 import examples.fluspreading.VisualGraph
 import examples.fluspreading.Person
 import scala.collection.mutable.ListBuffer
+import java.io.File
+import engine.SimulationEngine
 /**
   * This trait provides the capability for flexible statistics gathering.
   * After the statistics are gathered, a dataset can be written to a file for post analysis, for example by R
+  * This trait keeps it's own notion of time to be compatible with different simulation engines
+  * 
+  * The user needs to add a number of statistic functions, and set the samplePeriod
+  * After the simulation is complete, the user can call writeStatisticsToFile(path:String) to write the data in a text file
+  * 
   */
-trait Statistics {
+trait Statistics extends SimulationEngine{
+  
+  /**
+   * The period (number of 'doTurn' calls) at which will be sampled
+   */
+  var samplePeriod:Int = 1
+  /**
+   * The turn at which the engine is
+   */
+  var turn:Int = 0
   /**
     * A HashMap containing String identifiers and listbuffers that contain the results of the data gathering
     */
@@ -24,12 +40,11 @@ trait Statistics {
     * The amount of data entries of the results
     */
   var length:Int = 0
-  /**
-    * Indicates if the datagathering has started.
-    * When this is the case, no statistic functions may be added
-    */
-  var started:Boolean = false
-
+  val subject:Any
+  
+  def setSamplePeriod(p:Int){
+    samplePeriod = p
+  }
   /**
     * Add a statistical function that will be used for data gathering
     * This will create a new entry in the statistics List and results Map
@@ -40,20 +55,21 @@ trait Statistics {
     if(!results.contains(s)){
     statistics = (obj:Any=>String,s:String)::statistics
     results.put(s,new ListBuffer[String])
+    
     }
   }
   /**
     * gathers statistics from every function and puts them into the results map
     * the length variable will be increased by 1
     */
-  def gatherStat():Unit={
+  def gatherStat(a:Any):Unit={
     
     length += 1
     for((f,id)<-statistics){
     var v = results.get(id)	//We need to use pattern matching because HashMap.get returns an Option[T] 
     
     v match  {					
-       case Some(v) => v.+=:(f(this))
+       case Some(v) => v.+=:(f(a))
        case None =>		
       }
     }
@@ -89,12 +105,20 @@ trait Statistics {
     */
   def writeStatisticsToFile(path:String){
     try{
+      val v = new File(path)
+    if(v.exists) v.delete()
     val out = new java.io.FileWriter(path)
     out.write(getStatistics())
     out.close
     }catch{
       case e:Exception=>println("could not write to file " + path)
     }
+  }
+  override def doStep(){
+    super.doStep 
+    turn+=1
+    if(turn%(samplePeriod)==0)    gatherStat(subject)
+    
   }
   
   /******************************************************************

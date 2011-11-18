@@ -18,12 +18,15 @@ class RoundBasedEngine(graph:Graph) extends SimulationEngine(graph) {
   def run() {
 	  println("RoundBasedEngine started");
 	  while(shouldContinue) {
-	    forallClients(doRound)
-	    forallClients(nextRound)
-	    currentTime += ticksPerStep
+	    doStep
 	  }
 	  println("RoundBasedEngine stopped");
   }
+	override def doStep(){
+	  forallClients(doRound)
+	  forallClients(nextRound)
+	  currentTime += ticksPerStep
+	}
 	
 	private def forallClients(f:RoundClient=>Unit) {
 	  	var itt:Iterator[Node] = graph.nodes.valuesIterator

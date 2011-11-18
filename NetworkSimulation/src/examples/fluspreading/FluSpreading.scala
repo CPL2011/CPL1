@@ -16,14 +16,15 @@ import engine.RoundBasedEngine
 import engine.EventClient
 import engine.TurnClient
 import engine.RoundClient
+import statistics.Statistics
 
 object FluSpreading {
   val infectedPersonRate = 0.03f
-  
+  var statisticsPath = "fluspreadingData"
   def main(args: Array[String]) {
     
     println("Fluespreading example will start 3 times each time with another Engine.");
-	  var graph = new VisualGraph
+	  var graph = new VisualGraph("fluspreading.db")
 	  var visualizer = new GraphVisualizer(graph)
 	  if(args.length > 0)
 		  graph.setRemoteUbigraphServerHost(args.first)
@@ -37,16 +38,26 @@ object FluSpreading {
     	  i += 1
       }
       graph.addUnidirectionalEdges(0.005)
-	  
+	  graph.openDb()
+	  graph.save()
+      
+	 
 	  startTurnBasedEngine(graph,visualizer)
 	  graph.removeVisualization
-	  graph.nodes.values.foreach(resetPerson)
-	  graph.visualize
-	  startRoundBasedEngine(graph,visualizer)
-	  graph.removeVisualization
-	  graph.nodes.values.foreach(resetPerson)
-	  graph.visualize
-	  startEventBasedEngine(graph,visualizer)
+	  //graph.nodes.values.foreach(resetPerson)
+	  
+	  val graph2:VisualGraph = graph.loadGraph()
+	  graph2.visualize
+	  startRoundBasedEngine(graph2,visualizer)
+	  graph2.removeVisualization
+	 
+	  
+	  // graph.nodes.values.foreach(resetPerson)
+	  val graph3:VisualGraph = graph.loadGraph()
+	  graph.closeDb()
+	  graph3.visualize
+	  startEventBasedEngine(graph3,visualizer)
+      graph3.removeVisualization
       println("Fluespreading done");
   }
   
@@ -60,29 +71,53 @@ object FluSpreading {
     }
   }
   
-  private def startRoundBasedEngine(graph:Graph,visualizer:GraphVisualizer) {
-	  var engine = new RoundBasedEngine(graph)
+  private def startRoundBasedEngine(graph:VisualGraph,visualizer:GraphVisualizer) {
+	  var engine = new RoundEngine(graph)
+	  
+	  engine.addStatistic(engine.numberOfNodes,"#Nodes")
+	  engine.addStatistic(engine.averageNeighbores,"Av Neighbours")
+	  engine.addStatistic(getSusceptibleAmount,"#Susceptible")
+	  engine.addStatistic(getInfectedAmount,"#Infected")
+	  engine.addStatistic(getRemovedAmount,"#Removed")
+	  
 	  setStopCondition(engine)
       engine.addRoundClient(visualizer)
       engine.addRoundClient(new engineMonitor)
       engine.run
+      engine.writeStatisticsToFile(statisticsPath + "_round.txt")
   }
   
   private def startEventBasedEngine(graph:VisualGraph,visualizer:GraphVisualizer) {
-	  var engine = new EventBasedEngine(graph)
+	  var engine = new EventEngine(graph)
+	  
+	  engine.addStatistic(engine.numberOfNodes,"#Nodes")
+	  engine.addStatistic(engine.averageNeighbores,"Av Neighbours")
+	  engine.addStatistic(getSusceptibleAmount,"#Susceptible")
+	  engine.addStatistic(getInfectedAmount,"#Infected")
+	  engine.addStatistic(getRemovedAmount,"#Removed")
+	  
 	  setStopCondition(engine)
       engine.addEventClient(visualizer)
       var event:Event = new TriggerEvent(100)
 	  engine.send(event)
       engine.run
+      engine.writeStatisticsToFile(statisticsPath + "_event.txt")
   }
   
   private def startTurnBasedEngine(graph:VisualGraph,visualizer:GraphVisualizer){
-	  var engine = new TurnBasedEngine(graph)
+	  var engine = new TurnEngine(graph)
+	  
+	  engine.addStatistic(engine.numberOfNodes,"#Nodes")
+	  engine.addStatistic(engine.averageNeighbores,"Av Neighbours")
+	  engine.addStatistic(getSusceptibleAmount,"#Susceptible")
+	  engine.addStatistic(getInfectedAmount,"#Infected")
+	  engine.addStatistic(getRemovedAmount,"#Removed")
+	  
 	  setStopCondition(engine)
       engine.addTurnClient(visualizer)
       engine.addTurnClient(new engineMonitor)
       engine.run
+      engine.writeStatisticsToFile(statisticsPath + "_turn.txt")
   }
   
   private def setStopCondition(engine:SimulationEngine) {
@@ -94,6 +129,34 @@ object FluSpreading {
         }
       })
   }
+  private def getInfectedAmount(g:Any):String = g match{
+    case g:VisualGraph=>getPersonStatusAmount(g,"Infected").toString
+    case _=> ""
+  }
+  private def getSusceptibleAmount(g:Any):String = g match{
+    case g:VisualGraph => getPersonStatusAmount(g,"Susceptible").toString
+    case _=>""
+  }
+  private def getRemovedAmount(g:Any):String = g match{
+    case g:VisualGraph=>getPersonStatusAmount(g,"Removed").toString
+    case _=> ""
+  	}
+  
+    
+  private def getPersonStatusAmount(g:VisualGraph,status:String):Int = {
+    var i = 0
+    for((_,n)<-g.nodes) n match{
+      case n:Person => status match {
+        case "Susceptible" => if(n.isSusceptible)i +=1
+        case "Infected" => if(n.isInfected)i +=1
+        case "Removed" => if(n.isRemoved)i +=1
+      }
+      case _=>
+    }
+    
+    return i
+  }
+  
 }
 class engineMonitor extends RoundClient with TurnClient {
   val refreshRate:Int = SimulationTime.TICKS_PER_MINUTE * 20
@@ -115,4 +178,17 @@ class engineMonitor extends RoundClient with TurnClient {
 }
 class TriggerEvent(time:Int) extends TimeBasedEvent(time) {
   var name = "TriggerEvent"
+}
+class EventEngine(graph:VisualGraph) extends EventBasedEngine(graph) with Statistics{
+  override val subject = graph
+  setSamplePeriod(300)
+
+}
+class TurnEngine(graph:VisualGraph) extends TurnBasedEngine(graph) with Statistics{
+ override val subject = graph
+ setSamplePeriod(2000)
+}
+class RoundEngine(graph:VisualGraph) extends RoundBasedEngine(graph) with Statistics{
+  override val subject = graph
+  setSamplePeriod(2000)															
 }
