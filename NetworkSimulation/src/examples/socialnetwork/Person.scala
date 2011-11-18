@@ -7,6 +7,9 @@ import engine.RoundClient
 import engine.Event
 import graph.Edge
 
+/**
+ * This class represents a person in a social network.
+ */
 class Person(label: Int) extends Node(label) with TurnClient with RoundClient with EventClient {
   val FRIENDLY_RATE = 0.001f
   val FRIENDS_SATURATION = 50
@@ -16,13 +19,17 @@ class Person(label: Int) extends Node(label) with TurnClient with RoundClient wi
   def friends = getNeighbours
   var futureFriends: List[Person] = Nil
   
-  var needsVisualization = true
-  
+  /**
+   * Add a friend, so that this person and the friend are bidirectionally connected.
+   */
   def addFriend(friend: Person) = {
     addNeighbour(friend)
     friend.addNeighbour(this)
   }
   
+  /**
+   * Gather friends of friends that will become this person's friends in the future.
+   */
   private def gatherFutureFriends(duration: Int) {
     if(friends.length > friendsSaturation)
       return
