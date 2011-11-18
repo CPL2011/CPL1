@@ -4,11 +4,11 @@ import graph.persistence.Db4oPersistence
 import graph.Graph
 
 /**
- * A graph that supports loading a graph from storage
+ * A graph that supports loading a graph from a db4o database
  */
 class Db4oGraph(p:String) extends Graph with Db4oPersistence{
   /**
-   * Stores the given class parameter p under the var path
+   * This var indicates where the database is located
    */
   override var path = p
   
