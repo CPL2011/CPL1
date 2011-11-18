@@ -52,7 +52,6 @@ object SocialNetwork {
 			graph3.visualize
 			startEventBasedEngine(graph3,visualizer)
 			graph3.removeVisualization
-			println("Fluespreading done");
 	  println("Social networks stopped.");
   }
   /**
