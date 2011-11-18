@@ -8,7 +8,7 @@ import engine.Event
 import graph.Edge
 
 class Person(label: Int) extends Node(label) with TurnClient with RoundClient with EventClient {
-  val FRIENDLY_RATE = 0.0001f
+  val FRIENDLY_RATE = 0.001f
   val FRIENDS_SATURATION = 50
   
   var friendlyRate = FRIENDLY_RATE
@@ -29,7 +29,7 @@ class Person(label: Int) extends Node(label) with TurnClient with RoundClient wi
     friends.foreach(friend =>
       friend.getNeighbours.foreach(friendOfaFriend =>
         friendOfaFriend match {
-          case p:Person => if(!p.equals(this) && !friends.contains(p) && Math.random < friendlyRate*duration)
+          case p:Person => if(!p.equals(this) && !friends.contains(p) && Math.random > Math.pow(1-friendlyRate,duration))
             futureFriends ::= p
           case _ =>
         }))
@@ -56,7 +56,6 @@ class Person(label: Int) extends Node(label) with TurnClient with RoundClient wi
           gatherFutureFriends(1)
           futureFriends.foreach(friend => addFriend(friend))
           futureFriends = Nil
-          createEvent(new MeetFriendsEvent(this))
         }
       case _ => println("Unknown Event at Person" + event.name)
     }
