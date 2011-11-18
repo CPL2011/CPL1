@@ -47,6 +47,7 @@ object FluSpreading {
 	  //graph.nodes.values.foreach(resetPerson)
 	  
 	  val graph2:VisualGraph = graph.loadGraph()
+	  graph2.nodes.values.foreach(resetPerson)
 	  graph2.visualize
 	  startRoundBasedEngine(graph2,visualizer)
 	  graph2.removeVisualization
