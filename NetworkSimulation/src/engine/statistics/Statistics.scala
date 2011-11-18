@@ -1,4 +1,4 @@
-package statistics
+package engine.statistics
 import graph.Graph
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.StringBuilder

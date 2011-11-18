@@ -8,7 +8,7 @@ import engine.Event
 import engine.EventBasedEngine
 import engine.RoundBasedEngine
 import graph.Graph
-import statistics.Statistics
+import engine.statistics.Statistics
 
 object SocialNetwork {
   

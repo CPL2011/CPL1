@@ -16,7 +16,7 @@ import engine.RoundBasedEngine
 import engine.EventClient
 import engine.TurnClient
 import engine.RoundClient
-import statistics.Statistics
+import engine.statistics.Statistics
 
 object FluSpreading {
 	val infectedPersonRate = 0.03f
