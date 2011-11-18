@@ -1,6 +1,7 @@
 package graph.persistence
 /**
   * An abstract trait that provides the methods to store an object
+  * Each persistence trait should inherit from this trait or one of its sub-traits
   */
 abstract trait Persistence {  
   /**

@@ -7,8 +7,11 @@ import engine.RoundClient
 import engine.Event
 import graph.Edge
 
+/**
+ * This class represents a person in a social network.
+ */
 class Person(label: Int) extends Node(label) with TurnClient with RoundClient with EventClient {
-  val FRIENDLY_RATE = 0.0001f
+  val FRIENDLY_RATE = 0.001f
   val FRIENDS_SATURATION = 50
   
   var friendlyRate = FRIENDLY_RATE
@@ -16,20 +19,24 @@ class Person(label: Int) extends Node(label) with TurnClient with RoundClient wi
   def friends = getNeighbours
   var futureFriends: List[Person] = Nil
   
-  var needsVisualization = true
-  
+  /**
+   * Add a friend, so that this person and the friend are bidirectionally connected.
+   */
   def addFriend(friend: Person) = {
     addNeighbour(friend)
     friend.addNeighbour(this)
   }
   
+  /**
+   * Gather friends of friends that will become this person's friends in the future.
+   */
   private def gatherFutureFriends(duration: Int) {
     if(friends.length > friendsSaturation)
       return
     friends.foreach(friend =>
       friend.getNeighbours.foreach(friendOfaFriend =>
         friendOfaFriend match {
-          case p:Person => if(!p.equals(this) && !friends.contains(p) && Math.random < friendlyRate*duration)
+          case p:Person => if(!p.equals(this) && !friends.contains(p) && Math.random > Math.pow(1-friendlyRate,duration))
             futureFriends ::= p
           case _ =>
         }))
@@ -56,7 +63,6 @@ class Person(label: Int) extends Node(label) with TurnClient with RoundClient wi
           gatherFutureFriends(1)
           futureFriends.foreach(friend => addFriend(friend))
           futureFriends = Nil
-          createEvent(new MeetFriendsEvent(this))
         }
       case _ => println("Unknown Event at Person" + event.name)
     }
