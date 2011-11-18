@@ -59,8 +59,9 @@ trait Statistics extends SimulationEngine{
     }
   }
   /**
-    * gathers statistics from every function and puts them into the results map
+    * gathers statistics from every function in the statistics list and puts them into the results map
     * the length variable will be increased by 1
+    * This is sort of a higher order function where the function parameter is retrieved from an external list
     */
   def gatherStat(a:Any):Unit={
     

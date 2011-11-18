@@ -3,7 +3,9 @@ import com.db4o.Db4o
 import com.db4o.Db4oEmbedded
 import examples.persistence.Db4oGraph
 import graph.persistence.Db4oPersistence
-
+/**
+ * This is a quick test to test the tie initial implementation of db4o database
+ */
 object TestDB4O extends Application {
   var graph = new Db4oGraph("jordidb")
   

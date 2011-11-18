@@ -15,7 +15,11 @@ import com.db4o.ta.TransparentActivationSupport
   * A trait which adds db4o database functionality to a graph.
   * 
   * The programmer is responsible for opening and closing the database.
-  * openDb will open the database and set the path of the database, 
+  * openDb will open the database and set the path of the database.
+  * 
+  * The database will only contain one or zero Graph objects, each Db4oPersistence object
+  * will specify its own database, or will share a database(if for whatever reason you want to do this)
+  * This allows an easy and transparant load, store and query methods 
   * 
   * package download: http://www.db4o.com/community/qdownload.aspx?file=java.zip
   */

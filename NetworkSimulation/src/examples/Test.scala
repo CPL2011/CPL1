@@ -1,7 +1,7 @@
 package examples
 import examples.persistence.XMLGraph
 import scala.collection.mutable.ListBuffer
-import statistics.Statistics
+import engine.statistics.Statistics
 import graph.Visualizable 
 import graph.DepthFirstTraversal
 import graph.Node
@@ -9,7 +9,9 @@ import graph.Graph
 import graph.Edge
 import graph.BreadthFirstTraversal
 import org.ubiety.ubigraph.UbigraphClient
-
+/**
+ * These are some quick tests to test some initial implementations
+ */
 object Test extends Application {
 
   

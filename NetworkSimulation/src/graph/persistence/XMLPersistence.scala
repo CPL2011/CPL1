@@ -6,6 +6,9 @@ import java.io.File
 
 /**
   * A trait that provides the functionality to store an XML representation of an object
+  * 
+  * If a class mixes in this trait, it still needs to define how the class is transformed into XML (override toXML())
+  * And how the class is constructed from XML (override load())
   */
 trait XMLPersistence extends Graph with Persistence with XML{
   
