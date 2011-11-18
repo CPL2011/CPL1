@@ -11,6 +11,7 @@ import graph.Graph
 import statistics.Statistics
 
 object SocialNetwork {
+  
   val statisticsPath:String = "socialNetwork"
   def main(args: Array[String]) {
     
@@ -21,15 +22,15 @@ object SocialNetwork {
 	  if(args.length>0)
 		  graph.setRemoteUbigraphServerHost(args.first)
 	  
-	  var i:Int = 0
+	  var i:Int = 0				//graph setup
 	  while(i < 250){
 	    graph.addNode(new Person(i))
 	    i += 1
 	  }
 	  graph.addBidirectionalEdges(0.02)
 	  
-	  graph.openDb()
-			graph.save()
+	  graph.openDb()		//to illustrate load/store functionality, the initial graph is now saved
+			graph.save()	//to restore before each simulation, a 'new' graph will be loaded from the database
 
 
 			startTurnBasedEngine(graph,visualizer)
@@ -54,7 +55,12 @@ object SocialNetwork {
 			println("Fluespreading done");
 	  println("Social networks stopped.");
   }
-  
+  /**
+   * The next three functions will run the simulation
+   * First some 'statistic' functions are added which will be used for datagathering
+   * next the simulation is run
+   * finally the collected statistics are written into a file
+   */
   private def startTurnBasedEngine(graph:VisualGraph,visualizer:GraphVisualizer){
 	  var engine = new TurnEngine(graph)
 	  
@@ -105,6 +111,10 @@ object SocialNetwork {
         }
       })
   }
+  	/**
+	 * Definition of some functions used for data gathering
+	 * These functions must have an Any object as parameter and return a string
+	 */
   private def getEdgesAmount(g:Any):String = g match{
 	case g:VisualGraph=>{
 	  var i:Int = 0
@@ -117,6 +127,9 @@ object SocialNetwork {
 	}
 	
 }
+/**
+ * Definition of the engines that will allow datagathering
+ */
 class EventEngine(graph:VisualGraph) extends EventBasedEngine(graph) with Statistics{
 	override val subject = graph
 			setSamplePeriod(1)

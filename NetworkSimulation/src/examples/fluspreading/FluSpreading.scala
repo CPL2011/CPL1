@@ -31,7 +31,7 @@ object FluSpreading {
 			graph.setRemoteUbigraphServerHost(args.first)
 
 			var i:Int = 0
-			while(i < 200){
+			while(i < 200){								//Graph setup
 				var p:Person = new Person(i)
 			if(infectedPersonRate > Random.nextFloat())
 				p.updateStatus(InfectionStatus.Infectious)
@@ -39,8 +39,9 @@ object FluSpreading {
 				i += 1
 			}
 			graph.addUnidirectionalEdges(0.005)
-			graph.openDb()
-			graph.save()
+			graph.openDb()//to illustrate load/store functionality, the initial graph is now saved
+			graph.save()	//to restore before each simulation, a 'new' graph will be loaded from the database
+		
 
 
 			startTurnBasedEngine(graph,visualizer)
@@ -74,7 +75,13 @@ object FluSpreading {
 		case _ =>
 		}
 	}
-
+	
+ /**
+   * The next three functions will run the simulation
+   * First some 'statistic' functions are added which will be used for datagathering
+   * next the simulation is run
+   * finally the collected statistics are written into a file
+   */
 	private def startRoundBasedEngine(graph:VisualGraph,visualizer:GraphVisualizer) {
 		var engine = new RoundEngine(graph)
 
@@ -133,6 +140,10 @@ object FluSpreading {
 		}
 		})
 	}
+	/**
+	 * Definition of some functions used for data gathering
+	 * These functions must have an Any object as parameter and return a string
+	 */
 	private def getInfectedAmount(g:Any):String = g match{
 	case g:VisualGraph=>getPersonStatusAmount(g,"Infected").toString
 	case _=> ""
@@ -146,7 +157,9 @@ object FluSpreading {
 	case _=> ""
 	}
 
-
+	/**
+	 * helper function for the statistics functions
+	 */
 	private def getPersonStatusAmount(g:VisualGraph,status:String):Int = {
 			var i = 0
 					for((_,n)<-g.nodes) n match{
@@ -183,6 +196,9 @@ def nextRound() {}
 class TriggerEvent(time:Int) extends TimeBasedEvent(time) {
 	var name = "TriggerEvent"
 }
+/**
+ * Definition of the engines that will allow datagathering
+ */
 class EventEngine(graph:VisualGraph) extends EventBasedEngine(graph) with Statistics{
 	override val subject = graph
 			setSamplePeriod(300)
