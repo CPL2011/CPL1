@@ -85,11 +85,11 @@ object FluSpreading {
 	private def startRoundBasedEngine(graph:VisualGraph,visualizer:GraphVisualizer) {
 		var engine = new RoundEngine(graph)
 
-		engine.addStatistic(engine.numberOfNodes,"#Nodes")
-		engine.addStatistic(engine.averageNeighbores,"Av Neighbours")
-		engine.addStatistic(getSusceptibleAmount,"#Susceptible")
-		engine.addStatistic(getInfectedAmount,"#Infected")
-		engine.addStatistic(getRemovedAmount,"#Removed")
+		engine.addStatistic(engine.numberOfNodes,"Nodes")
+		engine.addStatistic(engine.averageNeighbores,"Av_Neighbours")
+		engine.addStatistic(getSusceptibleAmount,"Susceptible")
+		engine.addStatistic(getInfectedAmount,"Infected")
+		engine.addStatistic(getRemovedAmount,"Removed")
 
 		setStopCondition(engine)
 		engine.addRoundClient(visualizer)
@@ -101,11 +101,11 @@ object FluSpreading {
 	private def startEventBasedEngine(graph:VisualGraph,visualizer:GraphVisualizer) {
 		var engine = new EventEngine(graph)
 
-		engine.addStatistic(engine.numberOfNodes,"#Nodes")
-		engine.addStatistic(engine.averageNeighbores,"Av Neighbours")
-		engine.addStatistic(getSusceptibleAmount,"#Susceptible")
-		engine.addStatistic(getInfectedAmount,"#Infected")
-		engine.addStatistic(getRemovedAmount,"#Removed")
+		engine.addStatistic(engine.numberOfNodes,"Nodes")
+		engine.addStatistic(engine.averageNeighbores,"Av_Neighbours")
+		engine.addStatistic(getSusceptibleAmount,"Susceptible")
+		engine.addStatistic(getInfectedAmount,"Infected")
+		engine.addStatistic(getRemovedAmount,"Removed")
 
 		setStopCondition(engine)
 		engine.addEventClient(visualizer)
@@ -118,11 +118,11 @@ object FluSpreading {
 	private def startTurnBasedEngine(graph:VisualGraph,visualizer:GraphVisualizer){
 		var engine = new TurnEngine(graph)
 
-		engine.addStatistic(engine.numberOfNodes,"#Nodes")
-		engine.addStatistic(engine.averageNeighbores,"Av Neighbours")
-		engine.addStatistic(getSusceptibleAmount,"#Susceptible")
-		engine.addStatistic(getInfectedAmount,"#Infected")
-		engine.addStatistic(getRemovedAmount,"#Removed")
+		engine.addStatistic(engine.numberOfNodes,"Nodes")
+		engine.addStatistic(engine.averageNeighbores,"Av_Neighbours")
+		engine.addStatistic(getSusceptibleAmount,"Susceptible")
+		engine.addStatistic(getInfectedAmount,"Infected")
+		engine.addStatistic(getRemovedAmount,"Removed")
 
 		setStopCondition(engine)
 		engine.addTurnClient(visualizer)

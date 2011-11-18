@@ -84,7 +84,7 @@ trait Statistics extends SimulationEngine{
   def getStatistics():String = {
      var sb:StringBuilder = new StringBuilder
      
-     for(id<-results.keySet) sb.append("[" + id + "]" + "\t")
+     for(id<-results.keySet) sb.append(id + "\t")
      
      sb.append("\n")
      

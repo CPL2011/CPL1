@@ -63,9 +63,9 @@ object SocialNetwork {
   private def startTurnBasedEngine(graph:VisualGraph,visualizer:GraphVisualizer){
 	  var engine = new TurnEngine(graph)
 	  
-	  engine.addStatistic(engine.numberOfNodes,"#Nodes")
-	  engine.addStatistic(engine.averageNeighbores,"Av Neighbours")
-	  engine.addStatistic(getEdgesAmount,"#edgeTotal")
+	  engine.addStatistic(engine.numberOfNodes,"Nodes")
+	  engine.addStatistic(engine.averageNeighbores,"Av_Neighbours")
+	  engine.addStatistic(getEdgesAmount,"edgeTotal")
 		
 	  setStopCondition(engine)
       engine.addTurnClient(visualizer)
@@ -76,9 +76,9 @@ object SocialNetwork {
   private def startRoundBasedEngine(graph:VisualGraph,visualizer:GraphVisualizer) {
 	  var engine = new RoundEngine(graph)
 	  
-	  engine.addStatistic(engine.numberOfNodes,"#Nodes")
-	  engine.addStatistic(engine.averageNeighbores,"Av Neighbours")
-	  engine.addStatistic(getEdgesAmount,"#edgeTotal")
+	  engine.addStatistic(engine.numberOfNodes,"Nodes")
+	  engine.addStatistic(engine.averageNeighbores,"Av_Neighbours")
+	  engine.addStatistic(getEdgesAmount,"edgeTotal")
 	  
 	  setStopCondition(engine)
       engine.addRoundClient(visualizer)
@@ -89,9 +89,9 @@ object SocialNetwork {
   private def startEventBasedEngine(graph:VisualGraph,visualizer:GraphVisualizer) {
 	  var engine = new EventEngine(graph)
 	  
-	  engine.addStatistic(engine.numberOfNodes,"#Nodes")
-	  engine.addStatistic(engine.averageNeighbores,"Av Neighbours")
-	  engine.addStatistic(getEdgesAmount,"#edgeTotal")
+	  engine.addStatistic(engine.numberOfNodes,"Nodes")
+	  engine.addStatistic(engine.averageNeighbores,"Av_Neighbours")
+	  engine.addStatistic(getEdgesAmount,"edgeTotal")
 	  
 	  setStopCondition(engine)
       engine.addEventClient(visualizer)
@@ -131,16 +131,16 @@ object SocialNetwork {
  */
 class EventEngine(graph:VisualGraph) extends EventBasedEngine(graph) with Statistics{
 	override val subject = graph
-			setSamplePeriod(1)
+			setSamplePeriod(5)
 
 }
 class TurnEngine(graph:VisualGraph) extends TurnBasedEngine(graph) with Statistics{
 	override val subject = graph
-			setSamplePeriod(1)
+			setSamplePeriod(5)
 }
 class RoundEngine(graph:VisualGraph) extends RoundBasedEngine(graph) with Statistics{
 	override val subject = graph
-			setSamplePeriod(1)															
+			setSamplePeriod(5)															
 }
 class TriggerEvent(time:Int) extends TimeBasedEvent(time) {
   var name = "TriggerEvent"
