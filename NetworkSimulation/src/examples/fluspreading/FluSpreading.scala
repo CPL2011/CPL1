@@ -19,7 +19,7 @@ import engine.RoundClient
 import engine.statistics.Statistics
 
 object FluSpreading {
-	val infectedPersonRate = 0.03f
+	val infectedPersonRate = 0.01f
 			var statisticsPath = "fluspreadingData"
 			def main(args: Array[String]) {
 
